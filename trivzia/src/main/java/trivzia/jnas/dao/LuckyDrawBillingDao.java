@@ -426,10 +426,10 @@ public class LuckyDrawBillingDao extends DbConnectionDao
 			prepStmt = connection.prepareStatement(insertGamepoint,Statement.RETURN_GENERATED_KEYS);
 
 			prepStmt.setString(1, accountCode);
-			prepStmt.setInt(2, quantity);
-			prepStmt.setInt(3, quantity+gp);
-			prepStmt.setString(4, date);
-			prepStmt.setString(5, notes);
+			prepStmt.setString(2, date);
+			prepStmt.setString(3, notes);
+			prepStmt.setInt(4, quantity);
+			prepStmt.setInt(5, quantity+gp);
 			prepStmt.setInt(6, 0);
 			
 			

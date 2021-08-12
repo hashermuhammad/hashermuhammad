@@ -9,21 +9,23 @@ import redis.clients.jedis.Jedis;
 public class DbConnectionDao
 {
 
-	
+ 	static String connectionString = "jdbc:mysql://45.33.120.188:3306/trivzia?user=luckydraw&password=Je5sKwwDJJQjrnPs";
+//	static String connectionString = "jdbc:mysql://localhost:3306/trivzia_dev?user=usr&password=system4242&useSSL=false";
+	static String host = "192.168.159.148";
+//	static String host="127.0.0.1";
+	static String auth="NE94fEGeyfx2cQQ8";
+//	static String auth="p@ss1234";
 	
 	public static Jedis writeConnection(int num)
 	{
 		try
 		{
-			String host = "192.168.159.148";// "192.168.168.221";//You can view
-											// the connection address of the
-											// target instance in the console.
-			// String host = "34.126.134.177";
-		//	 String host="127.0.0.1";
+		//	String host = "192.168.159.148";
+			 
 			int port = 6379;
 			Jedis jedis = new Jedis(host, port);
 			/// Authentication information.
-			jedis.auth("NE94fEGeyfx2cQQ8");// password
+			jedis.auth(auth);// password
 			jedis.select(num);
 			return jedis;
 		}
@@ -40,15 +42,11 @@ public class DbConnectionDao
 
 		try
 		{
-			String host = "192.168.159.148";// "192.168.168.221";//You can view
-											// the connection address of the
-											// target instance in the console.
-			// String host = "34.126.134.177";
-		//	 String host="127.0.0.1";
+
 			int port = 6379;
 			Jedis jedis = new Jedis(host, port);
 			// Authentication information.
-			jedis.auth("NE94fEGeyfx2cQQ8");// password
+			jedis.auth(auth);// password
 			jedis.select(5);
 			return jedis;
 		}
@@ -81,8 +79,7 @@ public class DbConnectionDao
     public static Connection getSqlConnection()
     {
 		Connection con = null;
-		String connectionString = "jdbc:mysql://45.33.120.188:3306/trivzia?user=luckydraw&password=Je5sKwwDJJQjrnPs";
-//		String connectionString = "jdbc:mysql://localhost:3306/trivzia_dev?user=usr&password=system4242&useSSL=false";
+
 		try
 		{
 

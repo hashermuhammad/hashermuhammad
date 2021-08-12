@@ -3,6 +3,7 @@ package trivzia.jnas.helper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
@@ -26,8 +27,8 @@ public class LuckyDrawHelper extends DbConnectionDao
 {
 	public static String NEW_USER="newUser";
 	public static String OLD_USER="oldUser";
-	String root="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
-//	String root="C:\\Users\\LENOVO\\Downloads\\";
+	static String root="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
+//	static String root="C:\\Users\\LENOVO\\Downloads\\";
 	
 		
 	
@@ -161,26 +162,27 @@ public class LuckyDrawHelper extends DbConnectionDao
 
 	}
 	public static void createLuckyWinnerFile(String luckyWinnersJSON,String filename) throws IOException {
-		//System.out.println("Creating file at path : " + rootPath + "Winner.txt");
-	//	String rootPath="C:\\Users\\LENOVO\\Downloads\\";
-		String rootPath="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
-		File file = new File(rootPath ,filename);
+		// System.out.println("Creating file at path : " + rootPath + "Winner.txt");
+		File file = new File(root, filename);
 
 		// Create the file
-		if (file.createNewFile()) {
+		if (file.createNewFile())
+		{
 			System.out.println("File is created!");
-		} else {
+			FileUtils.writeStringToFile(file, luckyWinnersJSON, Charset.defaultCharset());
+		}
+		else
+		{
+			FileWriter writer = new FileWriter(file, true);
+			writer.write("\r\n");
+			writer.write(luckyWinnersJSON);
+			writer.close();
 			System.out.println("File already exists.");
 		}
 
 		// Write Content
-		/*
-		 * FileWriter writer = new FileWriter(file);
-		 * writer.write(luckyWinnersJSON); writer.close();
-		 */
-		
-		FileUtils.writeStringToFile(file,luckyWinnersJSON,Charset.defaultCharset() );
-		System.out.println(" file write"+filename+" completed.");
+
+		System.out.println(" file write" + filename + " completed.");
 	}
 	
 	
@@ -223,7 +225,7 @@ public class LuckyDrawHelper extends DbConnectionDao
 	                valB =  b.getInt(KEY_NAME);
 	            } 
 	            catch (JSONException e) {
-	                //do something
+	               System.out.println("This is exception"+e);
 	            }
 
 	            return valB.compareTo(valA);

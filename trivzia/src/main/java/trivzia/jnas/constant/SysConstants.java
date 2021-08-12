@@ -8,10 +8,6 @@ public class SysConstants
 	public static String REWARD_GOLD = "gold";
 	public static String REWARD_BUNDLE = "bundle";
 	public static String REWARD_GIVEAWAY = "Giveaway";
-	public static String REWARD_GAMEPOINT = "gamePoint";
-
-	
-	
-	
+	public static String REWARD_GAMEPOINT = "gamepoint";
 	
 }

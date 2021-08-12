@@ -85,7 +85,7 @@ public class LuckyDrawBillingCalculation extends LuckyDrawBillingHelper implemen
 				System.out.println("The index you have entered is invalid" + i);
 			}
 			
-			if (value != null && !value.isBlank())
+			if (value != null && !value.equals(""))
 			{
 
 				try

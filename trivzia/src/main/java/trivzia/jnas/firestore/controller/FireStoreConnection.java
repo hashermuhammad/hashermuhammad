@@ -15,14 +15,14 @@ public class FireStoreConnection {
 	GoogleCredentials credentials = null;
 
 	public FireStoreConnection() throws IOException {
-//		D:\\TrivziaDoc\\testingjeeto-firebase-adminsdk-eeokq-d27b582795.json
-//		/usr/local/src/SmartFoxServer_2X/SFS2X/data/Trivzia-7c763464a68f.json
+//	String path="D:\\TrivziaDoc\\testingjeeto-firebase-adminsdk-eeokq-d27b582795.json";
+	String path="/usr/local/src/SmartFoxServer_2X/SFS2X/data/Trivzia-7c763464a68f.json";
 
 		
 		
 		GoogleCredentials credentials = null;
 		try {
-			credentials = GoogleCredentials.fromStream(new FileInputStream(new File("/usr/local/src/SmartFoxServer_2X/SFS2X/data/Trivzia-7c763464a68f.json")))
+			credentials = GoogleCredentials.fromStream(new FileInputStream(new File(path)))
 					.createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,6 +58,9 @@ public class LuckyDrawController
 	public int giveAwayR3=0;
 	public int totalOnlineUser = 0;
 	int i=0;
+	int luckydrawCount=1;
+	String d1=null;
+	SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
 	private static LuckyDrawController luckyDrawController = null;
 	LuckyDrawController(final boolean test)
 	{
@@ -95,10 +100,42 @@ public class LuckyDrawController
 								"Event Listen is " + snapshot.getData().get("Question_Event"));
 						if (snapshot.getData().get("Question_Event").equals("LuckyDraw"))
 						{
+							DateUtils d= new DateUtils();
 							long start1 = System.currentTimeMillis();
+							if(d1!=null)
+							{
+								try
+								{
+									Date date1 = sdformat.parse(d1);
+									Date date2 = sdformat.parse(d.getCurrentDateString());
+									if(date1.compareTo(date2) == 0)   
+									{  
+									System.out.println("Both dates are equal");  
+									}
+									else
+									{
+										flushLuckyDrawDb();
+										cleanLuckyDrawFile("NewLuckyWinner.txt");	
+									}
+								}
+								catch (ParseException e2)
+								{
+									// TODO Auto-generated catch block
+									e2.printStackTrace();
+								}  
+							}
+							else
+							{
+								flushLuckyDrawDb();
+								cleanLuckyDrawFile("NewLuckyWinner.txt");	
+							}
+							
+							  
+								
+							
 							updateQuestionEvent();
-							flushLuckyDrawDb();
-							cleanLuckyDrawFile("LuckyDraw.txt");
+							
+							
 							Jedis jedis = LuckyDrawHelper.getConnection();
 							Set<String> jKeys = jedis.keys("*");
 							ArrayList<String> keysList = new ArrayList<String>();
@@ -118,7 +155,7 @@ public class LuckyDrawController
 								final ArrayList<String> arr = new ArrayList<String>(partition);
 								
 								es.execute( new LuckyDrawCalculation(test,
-												fb, arr,luckyDrawController,i)
+												fb, arr,luckyDrawController,i,luckydrawCount)
 									);
 
 							}
@@ -129,12 +166,13 @@ public class LuckyDrawController
 								if(finished)
 								{
 									
+									d1=d.getCurrentDateString();
 									 luckywinners();
 									 long end1 = System.currentTimeMillis();
 									 System.out.println("Elapsed Time in milli seconds: "
 												+ (end1 - start1));
 									 winnerJsonArray();
-									 
+									 ++luckydrawCount;
 									 
 									 
 									 
@@ -241,7 +279,10 @@ public class LuckyDrawController
 				String key = keys.get(i);
 				String value = jedis.get(key);
 				JSONObject object = new JSONObject(value);
+				if(object.getInt("LuckyDraw")==luckydrawCount)
+				{
 				luckydrawArray.put(object);
+				}
 				
 			}
 			LuckyDrawHelper hp =new LuckyDrawHelper();
@@ -251,9 +292,9 @@ public class LuckyDrawController
 			luckyWinnersObject.put("lucky_winners", sortedarray);
 			
 			String csv = CDL.toString(sortedarray);
-			LuckyDrawHelper.createLuckyWinnerFile(luckyWinnersObject.toString(),"LuckyDraw.txt");
+			LuckyDrawHelper.createLuckyWinnerFile(luckyWinnersObject.toString(),"NewLuckyWinner.txt");
 			DateUtils date1= new DateUtils();
-			LuckyDrawHelper.createLuckyWinnerFile(csv,date1.getCurrentDateString() + "LuckyDraw.csv ");
+			LuckyDrawHelper.createLuckyWinnerFile(csv,date1.getCurrentDateString() + "NewLuckyWinner.csv ");
 
 			
 			
