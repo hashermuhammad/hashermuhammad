@@ -26,7 +26,6 @@ public class LuckyDrawBillingController
 {
 	public String realtime = "RealtimeTest";
 	FireStoreConnection fb = null;
-	Thread t;
 	public ArrayList<JSONObject> luckyWinnerArray = new ArrayList<JSONObject>();
 	public int count = 0;
 	int tCount = 0;
@@ -49,7 +48,6 @@ public class LuckyDrawBillingController
 			}
 			luckyDrawBillingController = this;
 			fb = new FireStoreConnection();
-			this.t = Thread.currentThread();
 			DocumentReference docRef = fb.getDb().collection("TheGame").document(realtime);
 			docRef.addSnapshotListener(new EventListener<DocumentSnapshot>()
 			{
@@ -133,7 +131,7 @@ public class LuckyDrawBillingController
 				}
 			});
 
-			t.join();
+			
 
 		}
 		catch (IOException e)
@@ -141,11 +139,7 @@ public class LuckyDrawBillingController
 			// TODO Auto-generated catch block
 			System.out.println("This ");
 		}
-		catch (InterruptedException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
 	}
 
 	public static void main(String[] args)

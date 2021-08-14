@@ -1,4 +1,4 @@
- package trivzia.jnas.luckydraw.controller;
+package trivzia.jnas.luckydraw.controller;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,47 +33,56 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.common.collect.Lists;
 
 import redis.clients.jedis.Jedis;
+import trivzia.jnas.constant.SysConstants;
 import trivzia.jnas.firestore.controller.FireStoreConnection;
 import trivzia.jnas.helper.LuckyDrawHelper;
 import trivzia.jnas.utils.DateUtils;
 
-public class LuckyDrawController
-{
+public class LuckyDrawController {
 	public String realtime = "RealtimeTest";
 	FireStoreConnection fb = null;
 	Thread t;
-	public int oldUserRange0=0;  public int newUserRange0=0;
-	public int oldUserRange1=0;  public int newUserRange1=0;
-	public int oldUserRange2=0;  public int newUserRange2=0;
-	public int oldUserRange3=0;  public int newUserRange3=0;
-	public int oldUserRange4=0;  public int newUserRange4=0;
-	public int oldUserRange5=0;  public int newUserRange5=0;
-	public int oldUserRange6=0;  public int newUserRange6=0;
-	public int oldUserRange7=0;  public int newUserRange7=0;
-	public int oldUserRange8=0;  public int newUserRange8=0;
-	public int oldUserRange9=0;  public int newUserRange9=0;
-	public int oldUserRange10=0; public int newUserRange10=0;
-	public int giveAwayR0=0;	  public int giveAwayR1=0;
-	public int giveAwayR2=0;	  public int giveAwayR4=0;
-	public int giveAwayR3=0;
+	public int oldUserRange0 = 0;
+	public int newUserRange0 = 0;
+	public int oldUserRange1 = 0;
+	public int newUserRange1 = 0;
+	public int oldUserRange2 = 0;
+	public int newUserRange2 = 0;
+	public int oldUserRange3 = 0;
+	public int newUserRange3 = 0;
+	public int oldUserRange4 = 0;
+	public int newUserRange4 = 0;
+	public int oldUserRange5 = 0;
+	public int newUserRange5 = 0;
+	public int oldUserRange6 = 0;
+	public int newUserRange6 = 0;
+	public int oldUserRange7 = 0;
+	public int newUserRange7 = 0;
+	public int oldUserRange8 = 0;
+	public int newUserRange8 = 0;
+	public int oldUserRange9 = 0;
+	public int newUserRange9 = 0;
+	public int oldUserRange10 = 0;
+	public int newUserRange10 = 0;
+	public int giveAwayR0 = 0;
+	public int giveAwayR1 = 0;
+	public int giveAwayR2 = 0;
+	public int giveAwayR4 = 0;
+	public int giveAwayR3 = 0;
 	public int totalOnlineUser = 0;
-	int i=0;
-	int luckydrawCount=1;
-	String d1=null;
+	int i = 0;
+	int luckydrawCount = 1;
+	String d1 = null;
 	SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
 	private static LuckyDrawController luckyDrawController = null;
-	LuckyDrawController(final boolean test)
-	{
 
-		try
-		{
-			if (test)
-			{
+	LuckyDrawController(final boolean test) {
+
+		try {
+			if (test) {
 
 				realtime = "RealtimeTest";
-			}
-			else
-			{
+			} else {
 
 				realtime = "Realtime";
 			}
@@ -81,189 +90,168 @@ public class LuckyDrawController
 			fb = new FireStoreConnection();
 			this.t = Thread.currentThread();
 			DocumentReference docRef = fb.getDb().collection("TheGame").document(realtime);
-			docRef.addSnapshotListener(new EventListener<DocumentSnapshot>()
-			{
+			docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
 				@Override
-				public void onEvent(@Nullable DocumentSnapshot snapshot,
-						@Nullable FirestoreException e)
-				{
-					if (e != null)
-					{
+				public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirestoreException e) {
+					if (e != null) {
 						System.err.println("Listen failed: " + e);
 						return;
 					}
 
-					if (snapshot != null && snapshot.exists())
-					{
+					if (snapshot != null && snapshot.exists()) {
 
-						System.out.println(
-								"Event Listen is " + snapshot.getData().get("Question_Event"));
-						if (snapshot.getData().get("Question_Event").equals("LuckyDraw"))
-						{
-							DateUtils d= new DateUtils();
+						System.out.println("Event Listen is " + snapshot.getData().get("Question_Event"));
+						if (snapshot.getData().get("Question_Event").equals("LuckyDraw")) {
+							DateUtils d = new DateUtils();
 							long start1 = System.currentTimeMillis();
-							if(d1!=null)
-							{
-								try
-								{
+							if (d1 != null) {
+								try {
 									Date date1 = sdformat.parse(d1);
 									Date date2 = sdformat.parse(d.getCurrentDateString());
-									if(date1.compareTo(date2) == 0)   
-									{  
-									System.out.println("Both dates are equal");  
-									}
-									else
-									{
+									if (date1.compareTo(date2) == 0) {
 										flushLuckyDrawDb();
-										cleanLuckyDrawFile("NewLuckyWinner.txt");	
+										System.out.println("Both dates are equal");
+									} else {
+										flushLuckyDrawDb();
+										cleanLuckyDrawFile("LuckyWinnerFull.txt");
+										cleanLuckyDrawFile("LuckyWinner.txt");
+										cleanLuckyDrawFile("LuckyWinnerDashBoard.txt");
 									}
-								}
-								catch (ParseException e2)
-								{
+								} catch (ParseException e2) {
 									// TODO Auto-generated catch block
-									e2.printStackTrace();
-								}  
-							}
-							else
-							{
+									System.out.println(e2);
+								}
+							} else {
 								flushLuckyDrawDb();
-								cleanLuckyDrawFile("NewLuckyWinner.txt");	
+								cleanLuckyDrawFile("LuckyWinnerFull.txt");
+								cleanLuckyDrawFile("LuckyWinner.txt");
+								cleanLuckyDrawFile("LuckyWinnerDashBoard.txt");
 							}
-							
-							  
-								
-							
+
 							updateQuestionEvent();
-							
-							
+
 							Jedis jedis = LuckyDrawHelper.getConnection();
 							Set<String> jKeys = jedis.keys("*");
 							ArrayList<String> keysList = new ArrayList<String>();
 							keysList.addAll(jKeys);
 							int size = Math.round(keysList.size() / 10);
 							ExecutorService es = Executors.newCachedThreadPool();
-					//		System.out.println("size of keys"+keysList.size());
-							
-							for (List<String> partition : Lists.partition(keysList, size))
-							{
+							// System.out.println("size of keys"+keysList.size());
+
+							for (List<String> partition : Lists.partition(keysList, size)) {
 								++i;
-								if(i==11)
-								{
+								if (i == 11) {
 									break;
 								}
-						//		System.out.println("size of partition"+partition.size());
+								// System.out.println("size of partition"+partition.size());
 								final ArrayList<String> arr = new ArrayList<String>(partition);
-								
-								es.execute( new LuckyDrawCalculation(test,
-												fb, arr,luckyDrawController,i,luckydrawCount)
-									);
+
+								es.execute(new LuckyDrawCalculation(test, fb, arr, luckyDrawController, i,
+										luckydrawCount));
 
 							}
 							es.shutdown();
-							try
-							{
+							try {
 								boolean finished = es.awaitTermination(15, TimeUnit.SECONDS);
-								if(finished)
-								{
+								if (finished) {
+
+									oldUserRange0 = 0;
+									newUserRange0 = 0;
+									oldUserRange1 = 0;
+									newUserRange1 = 0;
+									oldUserRange2 = 0;
+									newUserRange2 = 0;
+									oldUserRange3 = 0;
+									newUserRange3 = 0;
+									oldUserRange4 = 0;
+									newUserRange4 = 0;
+									oldUserRange5 = 0;
+									newUserRange5 = 0;
+									oldUserRange6 = 0;
+									newUserRange6 = 0;
+									oldUserRange7 = 0;
+									newUserRange7 = 0;
+									oldUserRange8 = 0;
+									newUserRange8 = 0;
+									oldUserRange9 = 0;
+									newUserRange9 = 0;
+									oldUserRange10 = 0;
+									newUserRange10 = 0;
+									giveAwayR0 = 0;
+									giveAwayR1 = 0;
+									giveAwayR2 = 0;
+									giveAwayR4 = 0;
+									giveAwayR3 = 0;
+									totalOnlineUser = 0;
 									
-									d1=d.getCurrentDateString();
-									 luckywinners();
-									 long end1 = System.currentTimeMillis();
-									 System.out.println("Elapsed Time in milli seconds: "
-												+ (end1 - start1));
-									 winnerJsonArray();
-									 ++luckydrawCount;
-									 
-									 
-									 
-										 oldUserRange0=0;  newUserRange0=0;
-										 oldUserRange1=0;   newUserRange1=0;
-										 oldUserRange2=0;   newUserRange2=0;
-										 oldUserRange3=0;   newUserRange3=0;
-										 oldUserRange4=0;   newUserRange4=0;
-										 oldUserRange5=0;   newUserRange5=0;
-										 oldUserRange6=0;   newUserRange6=0;
-										 oldUserRange7=0;   newUserRange7=0;
-										 oldUserRange8=0;   newUserRange8=0;
-										 oldUserRange9=0;   newUserRange9=0;
-										 oldUserRange10=0; newUserRange10=0;
-										 giveAwayR0=0;	   giveAwayR1=0;
-										 giveAwayR2=0;	   giveAwayR4=0;
-										 giveAwayR3=0;
-										 totalOnlineUser = 0;
-									 
-									 
-									 
-									 
-									 
+									
+									
+	
+									d1 = d.getCurrentDateString();
+									luckywinners();
+									long end1 = System.currentTimeMillis();
+									System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
+									winnerJsonArray();
+
+									++luckydrawCount;
+									topWinnerJsonArray();
+									
+									
+
 								}
-							}
-							catch (InterruptedException e1)
-							{
+							} catch (InterruptedException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							
+
 						}
-						
-						
+
 					}
 				}
 			});
 
-			
 			t.join();
 
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("This ");
-		}
-		catch (InterruptedException e1)
-		{
+		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 
 		// long start1 = System.currentTimeMillis();
 		String realtimeTestValue = "";
-		if (args.length > 0)
-		{
+		if (args.length > 0) {
 			realtimeTestValue = args[0];
 		}
-		LuckyDrawController luckydraw = new LuckyDrawController(
-				realtimeTestValue.equalsIgnoreCase("test"));
+		LuckyDrawController luckydraw = new LuckyDrawController(realtimeTestValue.equalsIgnoreCase("test"));
 
 	}
 
-	public void updateQuestionEvent()
-	{
+	public void updateQuestionEvent() {
 
 		Map<String, Object> event_update = new HashMap<>();
 		event_update.put("Question_Event", "");
 
-		ApiFuture<WriteResult> writeResult = fb.getDb().collection("TheGame").document(realtime)
-				.set(event_update, SetOptions.merge());
+		ApiFuture<WriteResult> writeResult = fb.getDb().collection("TheGame").document(realtime).set(event_update,
+				SetOptions.merge());
 	}
 
-	public void luckywinners()
-	{
+	public void luckywinners() {
 
 		Map<String, Object> event_update = new HashMap<>();
 		event_update.put("Question_Event", "");
 		event_update.put("lucky_winners_processed", true);
 
-		ApiFuture<WriteResult> writeResult = fb.getDb().collection("TheGame").document(realtime)
-				.set(event_update, SetOptions.merge());
+		ApiFuture<WriteResult> writeResult = fb.getDb().collection("TheGame").document(realtime).set(event_update,
+				SetOptions.merge());
 	}
 
-	public void winnerJsonArray()
-	{
+	public void winnerJsonArray() {
 		JSONObject luckyWinnersObject = new JSONObject();
 		JSONArray luckydrawArray = new JSONArray();
 		Jedis jedis = LuckyDrawHelper.writeConnection(7);
@@ -271,62 +259,150 @@ public class LuckyDrawController
 		ArrayList<String> keys = new ArrayList<String>();
 		keys.addAll(jKeys);
 		Date date = new Date();
-		try
-		{
+		try {
 			int i = 0;
-			for (i = 1; i < keys.size(); i++)
-			{
+			for (i = 1; i < keys.size(); i++) {
 				String key = keys.get(i);
 				String value = jedis.get(key);
 				JSONObject object = new JSONObject(value);
-				if(object.getInt("LuckyDraw")==luckydrawCount)
-				{
-				luckydrawArray.put(object);
+				if (object.getInt("LuckyDraw") == luckydrawCount) {
+					luckydrawArray.put(object);
 				}
-				
+
 			}
-			LuckyDrawHelper hp =new LuckyDrawHelper();
-			
-			JSONArray sortedarray=hp.getSortedData(luckydrawArray);
+			LuckyDrawHelper hp = new LuckyDrawHelper();
+
+			JSONArray sortedarray = hp.getSortedData(luckydrawArray, "quantity");
+
 			luckyWinnersObject.put("Date", date.toString());
 			luckyWinnersObject.put("lucky_winners", sortedarray);
-			
-			String csv = CDL.toString(sortedarray);
-			LuckyDrawHelper.createLuckyWinnerFile(luckyWinnersObject.toString(),"NewLuckyWinner.txt");
-			DateUtils date1= new DateUtils();
-			LuckyDrawHelper.createLuckyWinnerFile(csv,date1.getCurrentDateString() + "NewLuckyWinner.csv ");
 
-			
-			
+			String csv = CDL.toString(sortedarray);
+			LuckyDrawHelper.createLuckyWinnerFile(luckyWinnersObject.toString(), "LuckyWinnerFull.txt");
+			DateUtils date1 = new DateUtils();
+			LuckyDrawHelper.createLuckyWinnerFile(csv, date1.getCurrentDateString() + "LuckyWinnerFull.csv ");
+
 			hp.closeConnection(jedis);
-		}
-		catch (JSONException | IOException e)
-		{
+		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("JSON Exception : " + e.toString());
 		}
 	}
-	public void flushLuckyDrawDb()
-	{
 
-		Jedis jedis=LuckyDrawHelper.writeConnection(7);
+	public void topWinnerJsonArray() {
+		
+		Jedis jedis = LuckyDrawHelper.writeConnection(7);
+		Set<String> jKeys = jedis.keys("*");
+		ArrayList<String> keys = new ArrayList<String>();
+		keys.addAll(jKeys);
+		
+
+		LuckyDrawHelper hp = new LuckyDrawHelper();
+		DocumentReference docRef = fb.getDb().collection("TheGame").document(realtime);
+		docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+			@Override
+			public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirestoreException e) {
+				if (e != null) {
+					System.err.println("Top List Listen failed: " + e);
+					return;
+				}
+
+				if (snapshot != null && snapshot.exists()) {
+					JSONObject luckyWinnersObject = new JSONObject();
+					JSONObject topluckyWinnersObject = new JSONObject();
+					JSONArray luckydrawArray = new JSONArray();
+					JSONArray luckydrawArraytop = new JSONArray();
+					System.out.println("LIST Event Listen is " + snapshot.getData().get("luckywinner_file"));
+					if (snapshot.getData().get("luckywinner_file").equals(true)) {
+
+						Map<String, Object> event_update = new HashMap<>();
+						event_update.put("luckywinner_file", false);
+
+						ApiFuture<WriteResult> writeResult =fb.getDb().collection("TheGame").document(realtime).set(event_update, SetOptions.merge());
+						try {
+							TimeUnit.SECONDS.sleep(10);
+						} catch (InterruptedException e2) {
+							// TODO Auto-generated catch block
+							System.out.println("This is sleep thread "+e2);
+							Thread.currentThread().interrupt();
+						}
+						int i = 0;
+						for (i = 1; i < keys.size(); i++) {
+							String key1 = keys.get(i);
+							String value1 = jedis.get(key1);
+							JSONObject object1 = new JSONObject(value1);
+							if (object1.has("billing") && object1.getBoolean("billing")) {
+								object1.put("event", "lucky_winners");
+								object1.put("amount", object1.getInt("quantity"));
+
+								luckydrawArray.put(object1);
+								
+								if (object1.getString("rewardType").equals(SysConstants.REWARD_GAMEPOINT)) {
+									object1.remove("billing");
+									object1.remove("LuckyDraw");
+									object1.remove("quantity");
+									object1.remove("rewardType");
+									luckydrawArraytop.put(object1);
+								}
+
+
+							}
+						}
+						
+						
+
+						/*
+						 * int j = 0; for (j = 0; j < 50; j++) {
+						 * luckydrawArraytop.put(sortedarray.get(j)); }
+						 */
+						
+						
+						
+						try {
+							Date date = new Date();
+							topluckyWinnersObject.put("Date", date.toString());
+							JSONArray topsortedarray = hp.getSortedData(luckydrawArraytop, "amount");
+							topluckyWinnersObject.put("lucky_winners", topsortedarray);	
+							LuckyDrawHelper.createLuckyWinnerFile(topluckyWinnersObject.toString(), "LuckyWinner.txt");
+							
+							
+							Date date1 = new Date();
+							JSONArray sortedarray = hp.getSortedData(luckydrawArray, "amount");
+							luckyWinnersObject.put("Date", date1.toString());
+							luckyWinnersObject.put("lucky_winners", sortedarray);
+							
+							LuckyDrawHelper.createLuckyWinnerFile(luckyWinnersObject.toString(), "LuckyWinnerDashBoard.txt");
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							System.out.println("TopArrayException : " + e1);
+						}
+
+					}
+
+				}
+			}
+
+		});
+
+	}
+
+	public void flushLuckyDrawDb() {
+
+		Jedis jedis = LuckyDrawHelper.writeConnection(7);
 		jedis.flushDB();
-		LuckyDrawHelper hp =new LuckyDrawHelper();
+		LuckyDrawHelper hp = new LuckyDrawHelper();
 		hp.closeConnection(jedis);
 	}
-	public void cleanLuckyDrawFile(String filename)
-	{
-//		String rootPath="C:\\Users\\LENOVO\\Downloads\\";
-		String rootPath="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
-		File file = new File(rootPath + "/"+filename);
-		PrintWriter writer =null;
-		try
-		{
+
+	public void cleanLuckyDrawFile(String filename) {
+//		String rootPath = "C:\\Users\\LENOVO\\Downloads\\";
+		String rootPath = "/usr/local/src/SmartFoxServer_2X/SFS2X/data";
+		File file = new File(rootPath + "/" + filename);
+		PrintWriter writer = null;
+		try {
 			writer = new PrintWriter(file);
-		}
-		catch (FileNotFoundException e)
-		{
-			System.out.println("Error in clearinf file"+e);
+		} catch (FileNotFoundException e) {
+			System.out.println("Error in clearinf file" + e);
 		}
 		writer.print("");
 		writer.close();

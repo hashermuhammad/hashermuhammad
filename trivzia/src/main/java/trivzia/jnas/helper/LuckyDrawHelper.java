@@ -201,7 +201,7 @@ public class LuckyDrawHelper extends DbConnectionDao
 
 	}
 	
-	public JSONArray getSortedData(JSONArray jsonArr)
+	public JSONArray getSortedData(JSONArray jsonArr,String key)
 	{
 		
 		
@@ -213,7 +213,8 @@ public class LuckyDrawHelper extends DbConnectionDao
 	    }
 	    Collections.sort( jsonValues, new Comparator<JSONObject>() {
 	        //You can change "Name" with "ID" if you want to sort by ID
-	        private static final String KEY_NAME = "quantity";
+	   //     private static final String KEY_NAME = "quantity";
+	    	 private final String KEY_NAME = key;
 
 	        @Override
 	        public int compare(JSONObject a, JSONObject b) {
