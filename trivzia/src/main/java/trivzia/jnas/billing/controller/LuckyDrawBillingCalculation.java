@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,121 +86,112 @@ public class LuckyDrawBillingCalculation extends LuckyDrawBillingHelper implemen
 				System.out.println("The index you have entered is invalid" + i);
 			}
 			
-			if (value != null && !value.equals(""))
-			{
+			if (value != null && !value.equals("")) {
 
-				try
-				{
-					JSONObject json = new JSONObject(value);
+				try {
+					JSONArray obj = new JSONArray(value);
+					for (int j = 0; j < obj.length(); ++j) {
+						JSONObject json = obj.getJSONObject(j);
 
-					if (json.has("billing") && json.getBoolean("billing"))
-					{
-						++totalCount;
-						String rewardType = json.getString("rewardType");
-						objArr.add(json);
+						if (json.has("billing") && json.getBoolean("billing")) {
+							++totalCount;
+							String rewardType = json.getString("rewardType");
+							objArr.add(json);
 
-						String accountcode = json.getString("accountcode");
-						int quantity = json.getInt("quantity");
-						String notes = "lucky_draw";
-						DateUtils date = new DateUtils();
+							String accountcode = json.getString("accountcode");
+							int quantity = json.getInt("quantity");
+							String notes = "lucky_draw";
+							DateUtils date = new DateUtils();
 
-						Billing b = LuckyDrawBillingDao.getOldBillingValues(accountcode,connection);
-						// System.out.println(b.getTotalEarning()+"-"+b.getGamepoint()+"-"+b.getLifeline());
-						if (rewardType.equals(SysConstants.REWARD_LIFE_LINE))
-						{
-							int insertkey = dao.insertLifeLine(accountcode, quantity,b.getLifeline(), notes, date.getCurrentDateTimeString(),connection);
-							if (insertkey > 0)
-							{
-								dao.updateLifeLine(accountcode, quantity, b.getLifeline(), notes,
+							Billing b = LuckyDrawBillingDao.getOldBillingValues(accountcode, connection);
+							// System.out.println(b.getTotalEarning()+"-"+b.getGamepoint()+"-"+b.getLifeline());
+							if (rewardType.equals(SysConstants.REWARD_LIFE_LINE)) {
+								int insertkey = dao.insertLifeLine(accountcode, quantity, b.getLifeline(), notes,
 										date.getCurrentDateTimeString(), connection);
-							}
-						}
-						else if (rewardType.equals(SysConstants.REWARD_PLUS_TIME))
-						{
+								if (insertkey > 0) {
+									dao.updateLifeLine(accountcode, quantity, b.getLifeline(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
+							} else if (rewardType.equals(SysConstants.REWARD_PLUS_TIME)) {
 
-							int insertkey = dao.insertPlusFive(accountcode, quantity,b.getPlustime(), notes, date.getCurrentDateTimeString(),connection);
-							if (insertkey > 0)
-							{
-								dao.updatePlustime(accountcode, quantity, b.getPlustime(), notes,
+								int insertkey = dao.insertPlusFive(accountcode, quantity, b.getPlustime(), notes,
 										date.getCurrentDateTimeString(), connection);
-							}
-						}
-						else if (rewardType.equals(SysConstants.REWARD_SILVER))
-						{
+								if (insertkey > 0) {
+									dao.updatePlustime(accountcode, quantity, b.getPlustime(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
+							} else if (rewardType.equals(SysConstants.REWARD_SILVER)) {
 
-							int insertkey = dao.insertSilver(accountcode, quantity, b.getSilver(),notes, date.getCurrentDateTimeString(), connection);
-							if (insertkey > 0)
-							{
-								dao.updateSilver(accountcode, quantity, b.getSilver(), notes,
+								int insertkey = dao.insertSilver(accountcode, quantity, b.getSilver(), notes,
 										date.getCurrentDateTimeString(), connection);
-							}
+								if (insertkey > 0) {
+									dao.updateSilver(accountcode, quantity, b.getSilver(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
 
-						}
-						else if (rewardType.equals(SysConstants.REWARD_GOLD))
-						{
+							} else if (rewardType.equals(SysConstants.REWARD_GOLD)) {
 
-							int insertkey = dao.insertGold(accountcode, quantity, b.getGold(),notes, date.getCurrentDateTimeString(), connection);
-							if (insertkey > 0)
-							{
-								dao.updateGold(accountcode, quantity, b.getGold(), notes,
+								int insertkey = dao.insertGold(accountcode, quantity, b.getGold(), notes,
 										date.getCurrentDateTimeString(), connection);
+								if (insertkey > 0) {
+									dao.updateGold(accountcode, quantity, b.getGold(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
+
+							} else if (rewardType.equals(SysConstants.REWARD_BUNDLE)) {
+								int insertkey = dao.insertLifeLine(accountcode, quantity, b.getLifeline(), notes,
+										date.getCurrentDateTimeString(), connection);
+								if (insertkey > 0) {
+									dao.updateLifeLine(accountcode, quantity, b.getLifeline(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
+
+								int insertkey2 = dao.insertPlusFive(accountcode, quantity, b.getPlustime(), notes,
+										date.getCurrentDateTimeString(), connection);
+								if (insertkey2 > 0) {
+									dao.updatePlustime(accountcode, quantity, b.getPlustime(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
+
+								int insertkey3 = dao.insertSilver(accountcode, quantity, b.getSilver(), notes,
+										date.getCurrentDateTimeString(), connection);
+								if (insertkey3 > 0) {
+									dao.updateSilver(accountcode, quantity, b.getSilver(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
+
+								int insertkey4 = dao.insertGold(accountcode, quantity, b.getGold(), notes,
+										date.getCurrentDateTimeString(), connection);
+								if (insertkey4 > 0) {
+									dao.updateGold(accountcode, quantity, b.getGold(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
+							} else if (rewardType.equals(SysConstants.REWARD_GAMEPOINT)) {
+
+								int insertkey5 = dao.insertGamePoint(accountcode, quantity, b.getGamepoint(), notes,
+										date.getCurrentDateTimeString(), connection);
+								if (insertkey5 > 0) {
+									dao.updateGamePoint(accountcode, quantity, b.getGamepoint(), notes,
+											date.getCurrentDateTimeString(), connection);
+								}
+
+							}
+						} else {
+							// System.out.println(" This is Deleting object " + json.toString());
+							if(obj.length()>1)
+							{
+								obj.remove(j);
+								delKeys.set(json.getString("phone"), json.toString());
+							}
+							else
+							{
+								jedis.del(key);
+								delKeys.set(json.getString("phone"), json.toString());
 							}
 
-						}
-						else if (rewardType.equals(SysConstants.REWARD_BUNDLE))
-						{
-							int insertkey = dao.insertLifeLine(accountcode, quantity,b.getLifeline(), notes, date.getCurrentDateTimeString(),connection);
-							if (insertkey > 0)
-							{
-								dao.updateLifeLine(accountcode, quantity, b.getLifeline(), notes,
-										date.getCurrentDateTimeString(), connection);
-							}
-
-							int insertkey2 = dao.insertPlusFive(accountcode, quantity,
-									b.getPlustime(), notes, date.getCurrentDateTimeString(),
-									connection);
-							if (insertkey2 > 0)
-							{
-								dao.updatePlustime(accountcode, quantity, b.getPlustime(), notes,
-										date.getCurrentDateTimeString(), connection);
-							}
-
-							int insertkey3 = dao.insertSilver(accountcode, quantity, b.getSilver(),
-									notes, date.getCurrentDateTimeString(), connection);
-							if (insertkey3 > 0)
-							{
-								dao.updateSilver(accountcode, quantity, b.getSilver(), notes,
-										date.getCurrentDateTimeString(), connection);
-							}
-
-							int insertkey4 = dao.insertGold(accountcode, quantity, b.getGold(),
-									notes, date.getCurrentDateTimeString(), connection);
-							if (insertkey4 > 0)
-							{
-								dao.updateGold(accountcode, quantity, b.getGold(), notes,
-										date.getCurrentDateTimeString(), connection);
-							}
-						}
-						else if (rewardType.equals(SysConstants.REWARD_GAMEPOINT))
-						{
-
-							int insertkey5 = dao.insertGamePoint(accountcode, quantity,b.getGamepoint(), notes, date.getCurrentDateTimeString(),connection);
-							if (insertkey5 > 0)
-							{
-								dao.updateGamePoint(accountcode, quantity, b.getGamepoint(), notes,
-										date.getCurrentDateTimeString(), connection);
-							}
 
 						}
 					}
-					else
-					{
-						// System.out.println(" This is Deleting object " + json.toString());
-						 jedis.del(key);
-						 delKeys.set(json.getString("phone"), json.toString());
-						 
-					}
-
 				}
 				catch (JSONException ex)
 				{

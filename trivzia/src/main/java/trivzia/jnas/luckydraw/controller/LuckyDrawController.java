@@ -109,7 +109,7 @@ public class LuckyDrawController {
 									Date date1 = sdformat.parse(d1);
 									Date date2 = sdformat.parse(d.getCurrentDateString());
 									if (date1.compareTo(date2) == 0) {
-										flushLuckyDrawDb();
+										
 										System.out.println("Both dates are equal");
 									} else {
 										flushLuckyDrawDb();
@@ -193,8 +193,8 @@ public class LuckyDrawController {
 									System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
 									winnerJsonArray();
 
-									++luckydrawCount;
 									topWinnerJsonArray();
+									++luckydrawCount;
 									
 									
 
@@ -264,10 +264,18 @@ public class LuckyDrawController {
 			for (i = 1; i < keys.size(); i++) {
 				String key = keys.get(i);
 				String value = jedis.get(key);
-				JSONObject object = new JSONObject(value);
-				if (object.getInt("LuckyDraw") == luckydrawCount) {
-					luckydrawArray.put(object);
+				
+				JSONArray obj= new JSONArray(value);
+				for(int j=0;j<obj.length();++j)
+				{
+					JSONObject object =obj.getJSONObject(j); 
+					
+					if (object.getInt("LuckyDraw") == luckydrawCount) {
+						System.out.println(object.toString());
+						luckydrawArray.put(object);
+					}
 				}
+				
 
 			}
 			LuckyDrawHelper hp = new LuckyDrawHelper();
@@ -330,22 +338,25 @@ public class LuckyDrawController {
 						for (i = 1; i < keys.size(); i++) {
 							String key1 = keys.get(i);
 							String value1 = jedis.get(key1);
-							JSONObject object1 = new JSONObject(value1);
-							if (object1.has("billing") && object1.getBoolean("billing")) {
-								object1.put("event", "lucky_winners");
-								object1.put("amount", object1.getInt("quantity"));
+							JSONArray obj= new JSONArray(value1);
+							for (int j = 0; j < obj.length(); ++j) {
+								JSONObject object1 = obj.getJSONObject(j);
 
-								luckydrawArray.put(object1);
-								
-								if (object1.getString("rewardType").equals(SysConstants.REWARD_GAMEPOINT)) {
-									object1.remove("billing");
-									object1.remove("LuckyDraw");
-									object1.remove("quantity");
-									object1.remove("rewardType");
-									luckydrawArraytop.put(object1);
+								if (object1.has("billing") && object1.getBoolean("billing")) {
+									object1.put("event", "lucky_winners");
+									object1.put("amount", object1.getInt("quantity"));
+
+									luckydrawArray.put(object1);
+
+									if (object1.getString("rewardType").equals(SysConstants.REWARD_GAMEPOINT)) {
+										object1.remove("billing");
+										object1.remove("LuckyDraw");
+										object1.remove("quantity");
+										object1.remove("rewardType");
+										luckydrawArraytop.put(object1);
+									}
+
 								}
-
-
 							}
 						}
 						

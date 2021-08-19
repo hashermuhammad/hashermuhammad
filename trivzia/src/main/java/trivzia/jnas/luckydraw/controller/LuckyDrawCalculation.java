@@ -263,17 +263,32 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 			String key = keys.get(j);
 			String value = jedis.get(key);
 			JSONObject json = new JSONObject(value);
-		
+			JSONArray luckywinnerArray=null;
 			if (json.has("Online") && json.getBoolean("Online") && json.has("new_balance")
 					&& json.has("datetime"))
 			{
 				int userBalance = json.getInt("new_balance");
 				String date = json.getString("datetime");
 				String userType = getUserType(date);
-				
 
-				
-					
+				if (luckydrawCount == 1) {
+					luckywinnerArray=new JSONArray();
+				}
+				else
+				{
+					if(setjedis.exists(key))
+					{
+					String winnerValue =	setjedis.get(key);
+					luckywinnerArray=new JSONArray(winnerValue);
+					}
+					else
+					{
+						luckywinnerArray=new JSONArray();
+					}
+				}
+
+
+	
 					// Category1
 
 					if ( userType.equalsIgnoreCase(NEW_USER) && userCountNewJsonFile.get(0)>luckyDrawController.newUserRange0)
@@ -309,8 +324,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 							{
 								
 								++luckyDrawController.newUserRange0;
-								
-								setjedis.set(key, resultJson.toString());
+								luckywinnerArray.put(resultJson);
+								setjedis.set(key, luckywinnerArray.toString());
 	//							getjedis.set(key, resultJson.toString());
 								
 
@@ -350,7 +365,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if(userCountNewJsonFile.get(1)>luckyDrawController.newUserRange1) {
 							
 							++luckyDrawController.newUserRange1;
-						setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
   //				    getjedis.set(key, resultJson.toString());
 						System.out.println("hello r2" + " This is thread number - " + id + "- "
 								+ luckyDrawController.newUserRange1);
@@ -389,7 +405,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(2) > luckyDrawController.newUserRange2)
 						{
 							++luckyDrawController.newUserRange2;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 							System.out.println("hello r3 " + " This is thread number - " + id + "- "
 									+ luckyDrawController.newUserRange2);
@@ -430,7 +447,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(3) > luckyDrawController.newUserRange3)
 						{
 							++luckyDrawController.newUserRange3;
-						setjedis.set(key, resultJson.toString());
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//					getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -466,7 +484,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(4) > luckyDrawController.newUserRange4)
 						{
 							++luckyDrawController.newUserRange4;
-						setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//					getjedis.set(key, resultJson.toString());
 						}
 
@@ -504,7 +523,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(5) > luckyDrawController.newUserRange5)
 						{
 						++luckyDrawController.newUserRange5;
-						setjedis.set(key, resultJson.toString());
+						luckywinnerArray.put(resultJson);
+						setjedis.set(key, luckywinnerArray.toString());
 	//					getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -541,7 +561,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(6) > luckyDrawController.newUserRange6)
 						{
 						++luckyDrawController.newUserRange6;
-						setjedis.set(key, resultJson.toString());
+						luckywinnerArray.put(resultJson);
+						setjedis.set(key, luckywinnerArray.toString());
 	// 				    getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -578,7 +599,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(7) > luckyDrawController.newUserRange7)
 						{
 							++luckyDrawController.newUserRange7;
-						setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//					getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -613,7 +635,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(8) > luckyDrawController.newUserRange8)
 						{
 							++luckyDrawController.newUserRange8;
-						setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//					getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -647,7 +670,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(9) > luckyDrawController.newUserRange9)
 						{
 							++luckyDrawController.newUserRange9;
-						setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//					getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -682,7 +706,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						if (userCountNewJsonFile.get(10) > luckyDrawController.newUserRange10)
 						{
 							++luckyDrawController.newUserRange10;
-						setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//					getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -718,7 +743,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						//++oldUserRange0;
 						if(userCountOldJsonFile.get(0)>luckyDrawController.oldUserRange0) {
 							++luckyDrawController.oldUserRange0;
-							setjedis.set(key, resultJson.toString());
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 						
@@ -752,7 +778,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(1)>luckyDrawController.oldUserRange1) {
 							++luckyDrawController.oldUserRange1;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//					    getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -786,7 +813,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(2)>luckyDrawController.oldUserRange2) {
 							++luckyDrawController.oldUserRange2;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -819,7 +847,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(3)>luckyDrawController.oldUserRange3) {
 							++luckyDrawController.oldUserRange3;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -852,7 +881,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(4)>luckyDrawController.oldUserRange4) {
 							++luckyDrawController.oldUserRange4;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -885,7 +915,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(5)>luckyDrawController.oldUserRange5) {
 							++luckyDrawController.oldUserRange5;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -918,7 +949,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(6)>luckyDrawController.oldUserRange6) {
 							++luckyDrawController.oldUserRange6;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -951,7 +983,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(7)>luckyDrawController.oldUserRange7) {
 							++luckyDrawController.oldUserRange7;
-							setjedis.set(key, resultJson.toString());
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -985,7 +1018,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(8)>luckyDrawController.oldUserRange8) {
 							++luckyDrawController.oldUserRange8;
-							setjedis.set(key, resultJson.toString());
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -1018,7 +1052,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(9)>luckyDrawController.oldUserRange9) {
 							++luckyDrawController.oldUserRange9;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -1052,7 +1087,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						
 						if(userCountOldJsonFile.get(10)>luckyDrawController.oldUserRange10) {
 							++luckyDrawController.oldUserRange10;
-							setjedis.set(key, resultJson.toString()); 
+							luckywinnerArray.put(resultJson);
+							setjedis.set(key, luckywinnerArray.toString());
 	//						getjedis.set(key, resultJson.toString());
 						}
 					}
@@ -1074,7 +1110,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 							 resultJson.put("LuckyDraw", luckydrawCount);
 							if(userCountGAJsonFile.get(0)>luckyDrawController.giveAwayR0) {
 								++luckyDrawController.giveAwayR0;
-								setjedis.set(key, resultJson.toString()); 
+								luckywinnerArray.put(resultJson);
+								setjedis.set(key, luckywinnerArray.toString());
 		//						getjedis.set(key, resultJson.toString());
 							}
 							
@@ -1091,7 +1128,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 							 resultJson.put("LuckyDraw", luckydrawCount);
 							if(userCountGAJsonFile.get(1)>luckyDrawController.giveAwayR1) {
 								++luckyDrawController.giveAwayR1;
-								setjedis.set(key, resultJson.toString());
+								luckywinnerArray.put(resultJson);
+								setjedis.set(key, luckywinnerArray.toString());
 		//						getjedis.set(key, resultJson.toString());
 							}
 						}
@@ -1107,7 +1145,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 							 resultJson.put("LuckyDraw", luckydrawCount);
 							if(userCountGAJsonFile.get(2)>luckyDrawController.giveAwayR2) {
 								++luckyDrawController.giveAwayR2;
-								setjedis.set(key, resultJson.toString());
+								luckywinnerArray.put(resultJson);
+								setjedis.set(key, luckywinnerArray.toString());
 		//						getjedis.set(key, resultJson.toString());
 							}
 						}
@@ -1123,7 +1162,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 							 resultJson.put("LuckyDraw", luckydrawCount);
 							if(userCountGAJsonFile.get(3)>luckyDrawController.giveAwayR3) {
 								++luckyDrawController.giveAwayR3;
-								setjedis.set(key, resultJson.toString()); 
+								luckywinnerArray.put(resultJson);
+								setjedis.set(key, luckywinnerArray.toString());
 		//						getjedis.set(key, resultJson.toString());
 							}
 						}
@@ -1139,7 +1179,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 							 resultJson.put("LuckyDraw", luckydrawCount);
 							if(userCountGAJsonFile.get(4)>luckyDrawController.giveAwayR4) {
 								++luckyDrawController.giveAwayR4;
-								setjedis.set(key, resultJson.toString());
+								luckywinnerArray.put(resultJson);
+								setjedis.set(key, luckywinnerArray.toString());
 		//						getjedis.set(key, resultJson.toString());
 							}
 						}
@@ -1296,7 +1337,7 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 		 System.out.println("Time for calculating GA and GP:-"
 					+ (End3 - start3));
 		closeConnection(setjedis);
-	//	closeConnection(getjedis);
+//		closeConnection(getjedis);
 	}
 	public void winnerJsonArray(JSONArray luckydrawArray)
 	{

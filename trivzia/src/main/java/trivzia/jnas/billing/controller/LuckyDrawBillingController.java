@@ -29,6 +29,8 @@ public class LuckyDrawBillingController
 	public ArrayList<JSONObject> luckyWinnerArray = new ArrayList<JSONObject>();
 	public int count = 0;
 	int tCount = 0;
+	boolean gameStarted=false;
+	Thread t;
 	LuckyDrawBillingController luckyDrawBillingController;
 
 	LuckyDrawBillingController(final boolean test)
@@ -48,6 +50,7 @@ public class LuckyDrawBillingController
 			}
 			luckyDrawBillingController = this;
 			fb = new FireStoreConnection();
+			this.t = Thread.currentThread();
 			DocumentReference docRef = fb.getDb().collection("TheGame").document(realtime);
 			docRef.addSnapshotListener(new EventListener<DocumentSnapshot>()
 			{
@@ -63,10 +66,14 @@ public class LuckyDrawBillingController
 
 					if (snapshot != null && snapshot.exists())
 					{
+						if (snapshot.getData().get("status").equals("JoinOn") && gameStarted == false) {
+							gameStarted = true;
+						}
 
 						System.out.println("Event Listen is " + snapshot.getData().get("status"));
-						if (snapshot.getData().get("status").equals("Scheduled"))
+						if (snapshot.getData().get("status").equals("Scheduled") && gameStarted == true)
 						{
+							gameStarted=false;
 							long start1 = System.currentTimeMillis();
 
 							Jedis jedis = LuckyDrawHelper.writeConnection(7);
@@ -132,12 +139,15 @@ public class LuckyDrawBillingController
 			});
 
 			
-
+			t.join();
 		}
 		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
-			System.out.println("This ");
+			System.out.println(e);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			System.out.println(e1);
 		}
 		
 	}
