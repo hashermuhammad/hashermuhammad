@@ -114,7 +114,7 @@ public class LuckyDrawHelper extends DbConnectionDao
 			int totalUsers,ArrayList<Integer> userCountGAJsonFile,int subOnline)
 	{
 		
-		int giveAwayUsersCount = Math.round((totalUsers / 2));
+		int giveAwayUsersCount = Math.round(((totalUsers / 100)*80));
 		int finalloopcount=(giveAwayUsersCount-subOnline);
 		setGAResult(jedis, finalloopcount, obj,userCountGAJsonFile);
 	}
