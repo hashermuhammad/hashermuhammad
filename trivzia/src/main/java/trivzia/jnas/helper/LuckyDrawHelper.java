@@ -2,10 +2,13 @@ package trivzia.jnas.helper;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,9 +19,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import redis.clients.jedis.Jedis;
 import trivzia.jnas.dao.DbConnectionDao;
@@ -164,7 +169,7 @@ public class LuckyDrawHelper extends DbConnectionDao
 	public static void createLuckyWinnerFile(String luckyWinnersJSON,String filename) throws IOException {
 		// System.out.println("Creating file at path : " + rootPath + "Winner.txt");
 		File file = new File(root, filename);
-
+		
 		// Create the file
 		if (file.createNewFile())
 		{
@@ -239,5 +244,32 @@ public class LuckyDrawHelper extends DbConnectionDao
 	        sortedJsonArray.put(jsonValues.get(i));
 	    }
 		return sortedJsonArray; 
+	}
+	
+	
+	public static void appendLuckyWinnerFile(JSONObject luckyWinnersJSON, String filename, JSONArray luckyWinnersJSONArr)
+			throws IOException {
+		// System.out.println("Creating file at path : " + rootPath + "Winner.txt");
+		File file = new File(root, filename);
+		// Create the file
+		try {
+			InputStream in = new FileInputStream(file);
+			String contents = IOUtils.toString(in, StandardCharsets.UTF_8);
+			System.out.println(contents);
+			 JSONTokener tokener = new JSONTokener(contents);
+			JSONObject json = new JSONObject(tokener);
+
+			JSONArray jsonObjecctArray = json.getJSONArray("lucky_winners");
+			jsonObjecctArray.putAll(luckyWinnersJSONArr);
+			luckyWinnersJSON.put("lucky_winners", jsonObjecctArray);
+		} catch (IOException e) {
+			System.out.println("Error in Append File" + e);
+		} catch (JSONException e1) {
+			System.out.println("Error in Append File json" + e1);
+		}
+
+		FileUtils.writeStringToFile(file, luckyWinnersJSON.toString(), Charset.defaultCharset());
+		System.out.println("File already exists.");
+
 	}
 }

@@ -5,19 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.Range;
-import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.SetOptions;
-import com.google.cloud.firestore.WriteResult;
 
 import redis.clients.jedis.Jedis;
 import trivzia.jnas.firestore.controller.FireStoreConnection;

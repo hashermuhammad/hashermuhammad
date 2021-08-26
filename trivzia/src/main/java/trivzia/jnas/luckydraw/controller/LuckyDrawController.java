@@ -134,15 +134,15 @@ public class LuckyDrawController {
 							Set<String> jKeys = jedis.keys("*");
 							ArrayList<String> keysList = new ArrayList<String>();
 							keysList.addAll(jKeys);
-							int size = Math.round(keysList.size() / 10);
+							double lsize = keysList.size();
+							int size = (int) Math.round(lsize / 10);
 							ExecutorService es = Executors.newCachedThreadPool();
 							// System.out.println("size of keys"+keysList.size());
 
 							for (List<String> partition : Lists.partition(keysList, size)) {
 								++i;
-								if (i == 11) {
-									break;
-								}
+								
+								// if (i == 11) {break;}
 								// System.out.println("size of partition"+partition.size());
 								final ArrayList<String> arr = new ArrayList<String>(partition);
 
@@ -286,9 +286,14 @@ public class LuckyDrawController {
 			luckyWinnersObject.put("lucky_winners", sortedarray);
 
 			String csv = CDL.toString(sortedarray);
-			LuckyDrawHelper.createLuckyWinnerFile(luckyWinnersObject.toString(), "LuckyWinnerFull.txt");
-			DateUtils date1 = new DateUtils();
-			LuckyDrawHelper.createLuckyWinnerFile(csv, date1.getCurrentDateString() + "LuckyWinnerFull.csv ");
+			if (luckydrawCount > 1) {
+				LuckyDrawHelper.appendLuckyWinnerFile(luckyWinnersObject, "LuckyWinnerFull.txt", sortedarray);
+			} else {
+				LuckyDrawHelper.createLuckyWinnerFile(luckyWinnersObject.toString(), "LuckyWinnerFull.txt");
+				DateUtils date1 = new DateUtils();
+				LuckyDrawHelper.createLuckyWinnerFile(csv, date1.getCurrentDateString() + "LuckyWinnerFull.csv ");
+			}
+			
 
 			hp.closeConnection(jedis);
 		} catch (JSONException | IOException e) {
@@ -360,13 +365,7 @@ public class LuckyDrawController {
 							}
 						}
 						
-						
 
-						/*
-						 * int j = 0; for (j = 0; j < 50; j++) {
-						 * luckydrawArraytop.put(sortedarray.get(j)); }
-						 */
-						
 						
 						
 						try {
