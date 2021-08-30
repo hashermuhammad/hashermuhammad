@@ -5,29 +5,34 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.Random;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import redis.clients.jedis.Jedis;
 import trivzia.jnas.dao.DbConnectionDao;
+import trivzia.jnas.luckydraw.controller.LuckyDrawController15;
 
-public class LuckyDrawHelper2 extends DbConnectionDao
+public class LuckyDrawHelper15 extends DbConnectionDao
 {
 	public static String NEW_USER="newUser";
 	public static String OLD_USER="oldUser";
-	String root="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
-//	String root="C:\\Users\\LENOVO\\Downloads\\";
-	
+	static String root="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
+//	static String root="C:\\Users\\LENOVO\\Downloads\\";
+	LuckyDrawController15 luckyDrawController=null;
 		
-	
+
 
 	public String readFile(String path)
 	{
@@ -57,19 +62,19 @@ public class LuckyDrawHelper2 extends DbConnectionDao
 
 	}
 
-	public String getUserType(String Date)
+	public String getUserType(String date)
 	{
 		String userType = "oldUser";
 		try
 		{  
-			if(!Date.equals("") && Date !=null)
+			if(date !=null && !date.equals("") )
 			{DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			Date sdate2= new Date();
 	        String dateToString = df.format(sdate2);
 			
 	    //    System.out.println("Parsing date is  " + Date);
 			
-		    Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(Date);
+		    Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		    Date date3=new SimpleDateFormat("yyyy-MM-dd").parse(dateToString);
 		    
 		   
@@ -96,11 +101,11 @@ public class LuckyDrawHelper2 extends DbConnectionDao
 			JSONObject range,ArrayList<Integer>userCountOldJsonFile,int index)
 	{
 		int size = range.getInt("numberOfUsers");
-	//	int perthreadsize=Math.round(size/10);
+		int perthreadsize=Math.round(size);
 
 		// percentage of old user
 		float olduserper=range.getInt("perOldUsers");
-		float oldUsers = Math.round((olduserper/100) * size);
+		float oldUsers = Math.round((olduserper/100) * perthreadsize);
 		int oldUserPer=(int) oldUsers;
 		userCountOldJsonFile.add(index,oldUserPer);
 
@@ -109,9 +114,10 @@ public class LuckyDrawHelper2 extends DbConnectionDao
 	public void setGiveAwayResultDocument(Jedis jedis,ArrayList<String> totalarr, JSONObject obj,
 			int totalUsers,ArrayList<Integer> userCountGAJsonFile,int subOnline)
 	{
-		int finalloopcount=(totalUsers-Math.round(subOnline/10));
-		int giveAwayUsersCount = Math.round((finalloopcount / 2));
-		setGAResult(jedis, giveAwayUsersCount, obj,userCountGAJsonFile);
+		
+		int giveAwayUsersCount = Math.round(((totalUsers / 100)*80));
+		int finalloopcount=(giveAwayUsersCount-subOnline);
+		setGAResult(jedis, finalloopcount, obj,userCountGAJsonFile);
 	}
 	
 	
@@ -156,24 +162,28 @@ public class LuckyDrawHelper2 extends DbConnectionDao
 		
 
 	}
-	public static void createLuckyWinnerFile(String luckyWinnersJSON) throws IOException {
-		//System.out.println("Creating file at path : " + rootPath + "Winner.txt");
-	//	String rootPath="C:\\Users\\LENOVO\\Downloads\\";
-		String rootPath="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
-		File file = new File(rootPath + "/LuckyWinner15.txt");
+	public static void createLuckyWinnerFile(String luckyWinnersJSON,String filename) throws IOException {
+		// System.out.println("Creating file at path : " + rootPath + "Winner.txt");
+		File file = new File(root, filename);
 
 		// Create the file
-		if (file.createNewFile()) {
+		if (file.createNewFile())
+		{
 			System.out.println("File is created!");
-		} else {
+			FileUtils.writeStringToFile(file, luckyWinnersJSON, Charset.defaultCharset());
+		}
+		else
+		{
+			FileWriter writer = new FileWriter(file, true);
+			writer.write("\r\n");
+			writer.write(luckyWinnersJSON);
+			writer.close();
 			System.out.println("File already exists.");
 		}
 
 		// Write Content
-		FileWriter writer = new FileWriter(file);
-		writer.write(luckyWinnersJSON);
-		writer.close();
-		System.out.println("Lucky winners file write completed.");
+
+		System.out.println(" file write" + filename + " completed.");
 	}
 	
 	
@@ -183,12 +193,58 @@ public class LuckyDrawHelper2 extends DbConnectionDao
 			JSONObject range,ArrayList<Integer>userCountNewJsonFile,int index)
 	{
 		int size = range.getInt("numberOfUsers");
-	//	int perthreadsize=Math.round(size/10);
+		int perthreadsize=Math.round(size);
 		// Percentage of new user
 		float userper=range.getInt("perNewUsers");
-		float users=Math.round( (userper/100) * size);
+		float users=Math.round( (userper/100) * perthreadsize);
 		int newUserPer=(int) users;
 		userCountNewJsonFile.add(index,newUserPer);
 
 	}
+	
+	public JSONArray getSortedData(JSONArray jsonArr,String key)
+	{
+		
+		
+	    JSONArray sortedJsonArray = new JSONArray();
+
+	    List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+	    for (int i = 0; i < jsonArr.length(); i++) {
+	        jsonValues.add(jsonArr.getJSONObject(i));
+	    }
+	    Collections.sort( jsonValues, new Comparator<JSONObject>() {
+	        //You can change "Name" with "ID" if you want to sort by ID
+	   //     private static final String KEY_NAME = "quantity";
+	    	 private final String KEY_NAME = key;
+
+	        @Override
+	        public int compare(JSONObject a, JSONObject b) {
+	            Integer valA = -1;
+	            Integer valB =-1;
+
+	            try {
+	                valA =  a.getInt(KEY_NAME);
+	                valB =  b.getInt(KEY_NAME);
+	            } 
+	            catch (JSONException e) {
+	               System.out.println("This is exception"+e);
+	            }
+
+	            return valB.compareTo(valA);
+	            //if you want to change the sort order, simply use the following:
+	            //return -valA.compareTo(valB);
+	        }
+	    });
+
+	    for (int i = 0; i < jsonArr.length(); i++) {
+	        sortedJsonArray.put(jsonValues.get(i));
+	    }
+		return sortedJsonArray; 
+	}
+	public boolean topUpCriteria()
+	{
+	
+		
+		return true;
+		}
 }

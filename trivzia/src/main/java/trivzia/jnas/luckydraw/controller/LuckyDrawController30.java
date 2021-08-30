@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -27,22 +26,19 @@ import com.google.cloud.firestore.EventListener;
 import com.google.cloud.firestore.FirestoreException;
 import com.google.cloud.firestore.SetOptions;
 import com.google.cloud.firestore.WriteResult;
-import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
 
 import redis.clients.jedis.Jedis;
 import trivzia.jnas.firestore.controller.FireStoreConnection;
-import trivzia.jnas.helper.LuckyDrawHelper;
-import trivzia.jnas.helper.LuckyDrawHelper2;
+import trivzia.jnas.helper.LuckyDrawHelper30;
 
-public class LuckyDrawController2
+public class LuckyDrawController30
 {
 	public String realtime = "RealtimeTest";
 	FireStoreConnection fb = null;
 	Thread t;
 	 
 
-	LuckyDrawController2(final boolean test)
+	LuckyDrawController30(final boolean test)
 	{
 
 		try
@@ -76,14 +72,14 @@ public class LuckyDrawController2
 					{
 
 						System.out.println(
-								"Event Listen is " + snapshot.getData().get("lucky_draw_15"));
-						if (snapshot.getData().get("lucky_draw_15").equals("LuckyDraw"))
+								"Event Listen is " + snapshot.getData().get("lucky_draw_30"));
+						if (snapshot.getData().get("lucky_draw_30").equals("LuckyDraw"))
 						{
 							long start1 = System.currentTimeMillis();
 							updateQuestionEvent();
 							flushLuckyDrawDb();
 							cleanLuckyDrawFile();
-							Jedis jedis = LuckyDrawHelper2.getConnection();
+							Jedis jedis = LuckyDrawHelper30.getConnection();
 							Set<String> jKeys = jedis.keys("*");
 							ArrayList<String> keysList = new ArrayList<String>();
 							keysList.addAll(jKeys);
@@ -105,7 +101,7 @@ public class LuckyDrawController2
 									{
 
 										
-										LuckyDrawCalculation2 ldc = new LuckyDrawCalculation2(test,
+										LuckyDrawCalculation30 ldc = new LuckyDrawCalculation30(test,
 												fb, arr);
 										ldc.callBusinessLogic();
 										
@@ -166,7 +162,7 @@ public class LuckyDrawController2
 		{
 			realtimeTestValue = args[0];
 		}
-		LuckyDrawController2 luckydraw = new LuckyDrawController2(
+		LuckyDrawController30 luckydraw = new LuckyDrawController30(
 				realtimeTestValue.equalsIgnoreCase("test"));
 
 	}
@@ -175,7 +171,7 @@ public class LuckyDrawController2
 	{
 
 		Map<String, Object> event_update = new HashMap<>();
-		event_update.put("lucky_draw_15", "");
+		event_update.put("lucky_draw_30", "");
 
 		ApiFuture<WriteResult> writeResult = fb.getDb().collection("TheGame").document(realtime)
 				.set(event_update, SetOptions.merge());
@@ -185,7 +181,7 @@ public class LuckyDrawController2
 	{
 
 		Map<String, Object> event_update = new HashMap<>();
-		event_update.put("lucky_draw_15", "");
+		event_update.put("lucky_draw_30", "");
 	//	event_update.put("lucky_winners_processed", true);
 
 		ApiFuture<WriteResult> writeResult = fb.getDb().collection("TheGame").document(realtime)
@@ -196,7 +192,7 @@ public class LuckyDrawController2
 	{
 		JSONObject luckyWinnersObject = new JSONObject();
 		JSONArray luckydrawArray = new JSONArray();
-		Jedis jedis = LuckyDrawHelper2.writeConnection(7);
+		Jedis jedis = LuckyDrawHelper30.writeConnection(7);
 		Set<String> jKeys = jedis.keys("*");
 		ArrayList<String> keys = new ArrayList<String>();
 		keys.addAll(jKeys);
@@ -212,11 +208,16 @@ public class LuckyDrawController2
 				luckydrawArray.put(object);
 				
 			}
-			LuckyDrawHelper2 hp =new LuckyDrawHelper2();
+			
+			
+			
+			
+			
+			LuckyDrawHelper30 hp =new LuckyDrawHelper30();
 			hp.closeConnection(jedis);
 			luckyWinnersObject.put("Date", date.toString());
 			luckyWinnersObject.put("lucky_winners", luckydrawArray);
-			LuckyDrawHelper2.createLuckyWinnerFile(luckyWinnersObject.toString());
+			LuckyDrawHelper30.createLuckyWinnerFile(luckyWinnersObject.toString());
 		}
 		catch (JSONException | IOException e)
 		{
@@ -227,16 +228,16 @@ public class LuckyDrawController2
 	public void flushLuckyDrawDb()
 	{
 
-		Jedis jedis=LuckyDrawHelper2.writeConnection(7);
+		Jedis jedis=LuckyDrawHelper30.writeConnection(7);
 		jedis.flushDB();
-		LuckyDrawHelper2 hp =new LuckyDrawHelper2();
+		LuckyDrawHelper30 hp =new LuckyDrawHelper30();
 		hp.closeConnection(jedis);
 	}
 	public void cleanLuckyDrawFile()
 	{
-	//	String rootPath="C:\\Users\\LENOVO\\Downloads\\";
-		String rootPath="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
-		File file = new File(rootPath + "/LuckyWinner15.txt");
+		String rootPath="C:\\Users\\LENOVO\\Downloads\\";
+	//	String rootPath="/usr/local/src/SmartFoxServer_2X/SFS2X/data";
+		File file = new File(rootPath + "/LuckyWinner30.txt");
 		PrintWriter writer =null;
 		try
 		{

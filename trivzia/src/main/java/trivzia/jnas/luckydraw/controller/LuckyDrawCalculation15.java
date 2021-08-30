@@ -14,9 +14,9 @@ import org.json.JSONObject;
 
 import redis.clients.jedis.Jedis;
 import trivzia.jnas.firestore.controller.FireStoreConnection;
-import trivzia.jnas.helper.LuckyDrawHelper;
+import trivzia.jnas.helper.LuckyDrawHelper15;
 
-public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable 
+public class LuckyDrawCalculation15 extends LuckyDrawHelper15 implements Runnable 
 {
 	String gameType = "RealtimeTest";
 	String root = "/usr/local/src/SmartFoxServer_2X/SFS2X/data";
@@ -24,10 +24,10 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 	FireStoreConnection fb;
 	ArrayList<String> keys;
 	int threadNumber=0;
-	LuckyDrawController luckyDrawController=null;
+	LuckyDrawController15 luckyDrawController=null;
 	int id=0;
 	int luckydrawCount;
-	LuckyDrawCalculation(boolean test, FireStoreConnection fb, ArrayList<String> keys,LuckyDrawController luckyDrawController,int id,int luckydrawCount)
+	LuckyDrawCalculation15(boolean test, FireStoreConnection fb, ArrayList<String> keys,LuckyDrawController15 luckyDrawController,int id,int luckydrawCount)
 	{
 		if (test)
 		{
@@ -92,6 +92,7 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 		luckyDrawController.criteriaFile.put("range8", range8);
 		luckyDrawController.criteriaFile.put("range9", range9);
 		luckyDrawController.criteriaFile.put("range10", range10);
+		
 		
 		
 		JSONObject garange0  = giveAwayObject.getJSONObject("range0");
@@ -258,7 +259,7 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 		 
 		int j = 0;
 		Jedis setjedis = writeConnection(7);
-	//	Jedis getjedis = writeConnection(6);
+		Jedis getjedis = writeConnection(9);
 		long start3 = System.currentTimeMillis();
 		for (j = 1; j < keys.size(); j++)
 		{
@@ -275,7 +276,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 				String userType = getUserType(date);
 				
 
-				
+				if(getjedis.exists(key))
+				{
 					
 					// Category1
 
@@ -1180,7 +1182,7 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 						break;
 					}
 					
-				
+		}
 			
 		/* ----------------------------------------- */
 
@@ -1299,7 +1301,7 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 		 System.out.println("Time for calculating GA and GP:-"
 					+ (End3 - start3));
 		closeConnection(setjedis);
-	//	closeConnection(getjedis);
+		closeConnection(getjedis);
 	}
 	public void winnerJsonArray(JSONArray luckydrawArray)
 	{

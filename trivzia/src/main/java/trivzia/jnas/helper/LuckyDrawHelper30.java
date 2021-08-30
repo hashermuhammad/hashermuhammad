@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
 import trivzia.jnas.dao.DbConnectionDao;
 
-public class LuckyDrawHelper3 extends DbConnectionDao
+public class LuckyDrawHelper30 extends DbConnectionDao
 {
 	public static String NEW_USER="newUser";
 	public static String OLD_USER="oldUser";

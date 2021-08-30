@@ -14,18 +14,18 @@ import org.json.JSONObject;
 
 import redis.clients.jedis.Jedis;
 import trivzia.jnas.firestore.controller.FireStoreConnection;
-import trivzia.jnas.helper.LuckyDrawHelper2;
+import trivzia.jnas.helper.LuckyDrawHelper30;
 
-public class LuckyDrawCalculation2 extends LuckyDrawHelper2
+public class LuckyDrawCalculation30 extends LuckyDrawHelper30
 {
 	String gameType = "RealtimeTest";
-	String root = "/usr/local/src/SmartFoxServer_2X/SFS2X/data";
-//	 String root="C:\\Users\\LENOVO\\Downloads\\";
+//	String root = "/usr/local/src/SmartFoxServer_2X/SFS2X/data";
+	 String root="C:\\Users\\LENOVO\\Downloads\\";
 	FireStoreConnection fb;
 	ArrayList<String> keys;
 	int threadNumber=0;
 
-	LuckyDrawCalculation2(boolean test, FireStoreConnection fb, ArrayList<String> keys)
+	LuckyDrawCalculation30(boolean test, FireStoreConnection fb, ArrayList<String> keys)
 	{
 		if (test)
 		{
@@ -48,7 +48,7 @@ public class LuckyDrawCalculation2 extends LuckyDrawHelper2
 		long End4 = System.currentTimeMillis();	
 		 System.out.println("Time for Shuffle Thread:-"
 					+ (End4 - start4));
-		String path = root + File.separator + "luckydraw15.json";
+		String path = root + File.separator + "luckydraw30.json";
 		String giveAwaypath = root + File.separator + "giveaway15.json";
 		String jsonFile = readFile(path);
 		JSONObject object = new JSONObject(jsonFile);
