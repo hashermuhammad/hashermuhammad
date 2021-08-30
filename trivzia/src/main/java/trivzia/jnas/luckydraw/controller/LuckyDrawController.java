@@ -35,7 +35,6 @@ import redis.clients.jedis.Jedis;
 import trivzia.jnas.constant.SysConstants;
 import trivzia.jnas.firestore.controller.FireStoreConnection;
 import trivzia.jnas.helper.LuckyDrawHelper;
-import trivzia.jnas.helper.LuckyDrawHelper15;
 import trivzia.jnas.utils.DateUtils;
 
 public class LuckyDrawController {
@@ -168,7 +167,7 @@ public class LuckyDrawController {
 										int r8 = oldUserRange8 + newUserRange8;
 										int r9 = oldUserRange9 + newUserRange9;
 										int r10 = oldUserRange10 + newUserRange10;
-										Jedis setjedis = LuckyDrawHelper15.writeConnection(7);
+										Jedis setjedis = LuckyDrawHelper.writeConnection(7);
 										if (criteriaFile.get("range0").getBoolean("outright")
 												&& r0 < criteriaFile.get("range0").getInt("numberOfUsers")) {
 
@@ -434,7 +433,7 @@ public class LuckyDrawController {
 											}
 										}
 										
-									LuckyDrawHelper15 hp = new LuckyDrawHelper15();
+									LuckyDrawHelper hp = new LuckyDrawHelper();
 									hp.closeConnection(setjedis);
 										
 		             /////////////////////////////////// TOP UP LIST CODE END ////////////////////////////////////////////
