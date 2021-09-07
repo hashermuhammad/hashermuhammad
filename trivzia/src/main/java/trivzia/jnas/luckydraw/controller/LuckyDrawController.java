@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -75,7 +76,7 @@ public class LuckyDrawController {
 	String d1 = null;
 	SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
 	private static LuckyDrawController luckyDrawController = null;
-
+	ConcurrentHashMap<String, JSONObject> criteriaFile = new ConcurrentHashMap<>();
 	LuckyDrawController(final boolean test) {
 
 		try {
@@ -155,47 +156,314 @@ public class LuckyDrawController {
 								boolean finished = es.awaitTermination(15, TimeUnit.SECONDS);
 								if (finished) {
 
-									oldUserRange0 = 0;
-									newUserRange0 = 0;
-									oldUserRange1 = 0;
-									newUserRange1 = 0;
-									oldUserRange2 = 0;
-									newUserRange2 = 0;
-									oldUserRange3 = 0;
-									newUserRange3 = 0;
-									oldUserRange4 = 0;
-									newUserRange4 = 0;
-									oldUserRange5 = 0;
-									newUserRange5 = 0;
-									oldUserRange6 = 0;
-									newUserRange6 = 0;
-									oldUserRange7 = 0;
-									newUserRange7 = 0;
-									oldUserRange8 = 0;
-									newUserRange8 = 0;
-									oldUserRange9 = 0;
-									newUserRange9 = 0;
-									oldUserRange10 = 0;
-									newUserRange10 = 0;
-									giveAwayR0 = 0;
-									giveAwayR1 = 0;
-									giveAwayR2 = 0;
-									giveAwayR4 = 0;
-									giveAwayR3 = 0;
-									totalOnlineUser = 0;
-									
-									
-									
-	
-									d1 = d.getCurrentDateString();
-									luckywinners();
-									long end1 = System.currentTimeMillis();
-									System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
-									winnerJsonArray();
+	/////////////////////////////////// TOP UP LIST CODE START ////////////////////////////////////////////
 
-									topWinnerJsonArray();
-									++luckydrawCount;
-									
+											int r0 = oldUserRange0 + newUserRange0;
+											int r1 = oldUserRange1 + newUserRange1;
+											int r2 = oldUserRange2 + newUserRange2;
+											int r3 = oldUserRange3 + newUserRange3;
+											int r4 = oldUserRange4 + newUserRange4;
+											int r5 = oldUserRange5 + newUserRange5;
+											int r6 = oldUserRange6 + newUserRange6;
+											int r7 = oldUserRange7 + newUserRange7;
+											int r8 = oldUserRange8 + newUserRange8;
+											int r9 = oldUserRange9 + newUserRange9;
+											int r10 = oldUserRange10 + newUserRange10;
+											Jedis setjedis = LuckyDrawHelper.writeConnection(7);
+
+											if (criteriaFile.get("range0").getBoolean("outright")
+													&& r0 < criteriaFile.get("range0").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range0").getInt("numberOfUsers")) - r0);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range0").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range1").getBoolean("outright")
+													&& r1 < criteriaFile.get("range1").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range1").getInt("numberOfUsers")) - r1);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range1").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range2").getBoolean("outright")
+													&& r2 < criteriaFile.get("range2").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range2").getInt("numberOfUsers")) - r2);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range2").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range3").getBoolean("outright")
+													&& r3 < criteriaFile.get("range3").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range3").getInt("numberOfUsers")) - r3);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range3").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range4").getBoolean("outright")
+													&& r4 < criteriaFile.get("range4").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range4").getInt("numberOfUsers")) - r4);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range4").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range5").getBoolean("outright")
+													&& r5 < criteriaFile.get("range5").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range5").getInt("numberOfUsers")) - r5);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range5").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range6").getBoolean("outright")
+													&& r6 < criteriaFile.get("range6").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range6").getInt("numberOfUsers")) - r6);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range6").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range7").getBoolean("outright")
+													&& r7 < criteriaFile.get("range7").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range7").getInt("numberOfUsers")) - r7);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range7").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range8").getBoolean("outright")
+													&& r8 < criteriaFile.get("range8").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range8").getInt("numberOfUsers")) - r8);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range8").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range9").getBoolean("outright")
+													&& r9 < criteriaFile.get("range9").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range9").getInt("numberOfUsers")) - r9);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range9").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											if (criteriaFile.get("range10").getBoolean("outright")
+													&& r10 < criteriaFile.get("range10").getInt("numberOfUsers")) {
+
+												int diff = ((criteriaFile.get("range10").getInt("numberOfUsers")) - r10);
+
+												for (int i = 0; i < diff;) {
+													String k = jedis.randomKey();
+													String v = jedis.get(k);
+													JSONObject json = new JSONObject(v);
+													if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+															&& json.has("new_balance") && json.has("datetime")) {
+														JSONObject resultJson = new JSONObject();
+														resultJson.put("phone", json.getString("phone"));
+														resultJson.put("accountcode", json.getString("accountcode"));
+														resultJson.put("username", json.getString("username"));
+														resultJson.put("rewardType", "gamepoint");
+														resultJson.put("quantity", criteriaFile.get("range10").getInt("reward"));
+														resultJson.put("billing", false);
+														resultJson.put("LuckyDraw", luckydrawCount);
+														setjedis.set(k, resultJson.toString());
+														i++;
+													}
+												}
+											}
+											
+										LuckyDrawHelper hp = new LuckyDrawHelper();
+										hp.closeConnection(setjedis);
+											
+			             /////////////////////////////////// TOP UP LIST CODE END ////////////////////////////////////////////
+											
+											oldUserRange0 = 0;			newUserRange0 = 0;          oldUserRange1 = 0;
+											newUserRange1 = 0;			oldUserRange2 = 0;          newUserRange2 = 0;
+											oldUserRange3 = 0;          newUserRange3 = 0;          oldUserRange4 = 0;
+											newUserRange4 = 0;          oldUserRange5 = 0;          newUserRange5 = 0;
+											oldUserRange6 = 0;          newUserRange6 = 0;          oldUserRange7 = 0;
+											newUserRange7 = 0;          oldUserRange8 = 0;          newUserRange8 = 0;
+											oldUserRange9 = 0;          newUserRange9 = 0;          oldUserRange10 = 0;
+											newUserRange10 = 0;         giveAwayR0 = 0;             giveAwayR1 = 0;
+											giveAwayR2 = 0;             giveAwayR4 = 0;             giveAwayR3 = 0;
+											totalOnlineUser = 0;
+
+										
+										
+										
+		
+										d1 = d.getCurrentDateString();
+										luckywinners();
+										long end1 = System.currentTimeMillis();
+										System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
+										winnerJsonArray();
+
+										++luckydrawCount;
+										topWinnerJsonArray();
 									
 
 								}
@@ -264,19 +532,20 @@ public class LuckyDrawController {
 			for (i = 1; i < keys.size(); i++) {
 				String key = keys.get(i);
 				String value = jedis.get(key);
-				
-				JSONArray obj= new JSONArray(value);
-				for(int j=0;j<obj.length();++j)
-				{
-					JSONObject object =obj.getJSONObject(j); 
+				if (isJSONValid(value)) {
 					
-					if (object.getInt("LuckyDraw") == luckydrawCount) {
-						System.out.println(object.toString());
-						luckydrawArray.put(object);
-					}
-				}
-				
+					JSONArray obj = new JSONArray(value);
 
+					for (int j = 0; j < obj.length(); ++j) {
+						JSONObject object = obj.getJSONObject(j);
+
+						if (object.getInt("LuckyDraw") == luckydrawCount) {
+
+							luckydrawArray.put(object);
+						}
+					}
+
+				}
 			}
 			LuckyDrawHelper hp = new LuckyDrawHelper();
 
@@ -405,8 +674,8 @@ public class LuckyDrawController {
 	}
 
 	public void cleanLuckyDrawFile(String filename) {
-//		String rootPath = "C:\\Users\\LENOVO\\Downloads\\";
-		String rootPath = "/usr/local/src/SmartFoxServer_2X/SFS2X/data";
+		String rootPath = "C:\\Users\\LENOVO\\Downloads\\";
+//		String rootPath = "/usr/local/src/SmartFoxServer_2X/SFS2X/data";
 		File file = new File(rootPath + "/" + filename);
 		PrintWriter writer = null;
 		try {
@@ -416,5 +685,16 @@ public class LuckyDrawController {
 		}
 		writer.print("");
 		writer.close();
+	}
+
+	public boolean isJSONValid(String test) {
+		try {
+			new JSONArray(test);
+		} catch (JSONException ex1) {
+			System.out.println(test);
+			return false;
+		}
+
+		return true;
 	}
 }

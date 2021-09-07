@@ -261,7 +261,10 @@ public class LuckyDrawHelper extends DbConnectionDao
 
 			JSONArray jsonObjecctArray = json.getJSONArray("lucky_winners");
 			jsonObjecctArray.putAll(luckyWinnersJSONArr);
-			luckyWinnersJSON.put("lucky_winners", jsonObjecctArray);
+			
+			LuckyDrawHelper hp = new LuckyDrawHelper();
+			JSONArray sortedarray = hp.getSortedData(jsonObjecctArray, "quantity");
+			luckyWinnersJSON.put("lucky_winners", sortedarray);
 		} catch (IOException e) {
 			System.out.println("Error in Append File" + e);
 		} catch (JSONException e1) {
