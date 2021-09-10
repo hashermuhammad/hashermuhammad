@@ -69,6 +69,7 @@ public class LuckyDrawController15 {
 	public int giveAwayR4 = 0;
 	public int giveAwayR3 = 0;
 	public int totalOnlineUser = 0;
+	public int newOnlineUser = 0;
 	int i = 0;
 	int luckydrawCount = 1;
 	String d1 = null;
@@ -445,7 +446,7 @@ public class LuckyDrawController15 {
 									oldUserRange9 = 0;          newUserRange9 = 0;          oldUserRange10 = 0;
 									newUserRange10 = 0;         giveAwayR0 = 0;             giveAwayR1 = 0;
 									giveAwayR2 = 0;             giveAwayR4 = 0;             giveAwayR3 = 0;
-									totalOnlineUser = 0;
+									totalOnlineUser = 0;		newOnlineUser = 0;
 
 									
 									

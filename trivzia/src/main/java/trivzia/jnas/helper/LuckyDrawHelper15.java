@@ -62,29 +62,27 @@ public class LuckyDrawHelper15 extends DbConnectionDao
 
 	}
 
-	public String getUserType(String date)
-	{
+	public String getUserType(String date) {
 		String userType = "oldUser";
-		try
-		{  
-			if(date !=null && !date.equals("") )
-			{DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			Date sdate2= new Date();
-	        String dateToString = df.format(sdate2);
-			
-	    //    System.out.println("Parsing date is  " + Date);
-			
-		    Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);
-		    Date date3=new SimpleDateFormat("yyyy-MM-dd").parse(dateToString);
-		    
-		   
-			boolean diff = date3.after(date1);
-			if (diff)
-			{
-				userType = "oldUser";
-			}else {
-				userType = "newUser";
-			}
+		try {
+			if (date != null && !date.equals("")) {
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				Date sdate2 = new Date();
+				String dateToString = df.format(sdate2);
+
+				// System.out.println("Parsing date is " + Date);
+
+				Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+				Date date3 = new SimpleDateFormat("yyyy-MM-dd").parse(dateToString);
+
+				boolean diff = date3.after(date1);
+				if (diff) {
+					userType = "oldUser";
+				} else {
+					userType = "newUser";
+				}
+			} else {
+				System.out.println(" error in  dates for luckydraw " + date);
 			}
 		}
 		catch (ParseException e)

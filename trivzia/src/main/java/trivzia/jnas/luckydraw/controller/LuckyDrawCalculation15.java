@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import redis.clients.jedis.Jedis;
+import trivzia.jnas.constant.SysConstants;
 import trivzia.jnas.firestore.controller.FireStoreConnection;
 import trivzia.jnas.helper.LuckyDrawHelper15;
 
@@ -193,12 +194,19 @@ public class LuckyDrawCalculation15 extends LuckyDrawHelper15 implements Runnabl
 			String key = keys.get(i);
 			String value = jedis.get(key);
 			JSONObject json = new JSONObject(value);
-			if (json.has("Online") && json.getBoolean("Online"))
-			{
+			if (json.has("Online") && json.getBoolean("Online")) {
 				luckyDrawController.totalOnlineUser++;
+				if (json.has("datetime")) {
+					String date = json.getString("datetime");
+					String userType = getUserType(date);
+					if (userType.equals(NEW_USER)) {
+						luckyDrawController.newOnlineUser++;
+					}
+				}
 			}
 		}
 		System.out.println("Total Online User"+luckyDrawController.totalOnlineUser);
+		System.out.println("Total Online New User"+luckyDrawController.newOnlineUser);
 		long End2 = System.currentTimeMillis();	
 		 System.out.println("Time for calculating Online Users Thread:-"
 					+ (End2 - start2));
@@ -275,59 +283,16 @@ public class LuckyDrawCalculation15 extends LuckyDrawHelper15 implements Runnabl
 				String date = json.getString("datetime");
 				String userType = getUserType(date);
 				
+				
+		
 
 				if(getjedis.exists(key))
 				{
 					
-					// Category1
-
-					if ( userType.equalsIgnoreCase(NEW_USER) && userCountNewJsonFile.get(0)>luckyDrawController.newUserRange0)
-					{
-						
-						
-						
-						  JSONObject resultJson = new JSONObject();
-						  resultJson.put("phone", json.getString("phone"));
-						  resultJson.put("accountcode",
-						  json.getString("accountcode"));
-						  resultJson.put("username",
-						  json.getString("username"));
-						  resultJson.put("rewardType", "gamepoint");
-						  resultJson.put("quantity", range0.getInt("reward"));
-						  resultJson.put("billing", false);
-						  resultJson.put("LuckyDraw", luckydrawCount);
-						 
-							/*
-							 * JSONObject resultJson = new JSONObject();
-							 * resultJson.put("phone", json.getString("phone"));
-							 * resultJson.put("accountcode",
-							 * json.getString("accountcode"));
-							 * resultJson.put("username",
-							 * json.getString("username"));
-							 * resultJson.put("event", "lucky_winners");
-							 * resultJson.put("amount",
-							 * range0.getInt("reward"));
-							 */
-							
-							//++newUserRange0;
-							if (userCountNewJsonFile.get(0) > luckyDrawController.newUserRange0)
-							{
-								
-								++luckyDrawController.newUserRange0;
-								
-								setjedis.set(key, resultJson.toString());
-	//							getjedis.set(key, resultJson.toString());
-								
-
-								System.out.println("hello " + " This is thread number - " + id
-										+ "- " + luckyDrawController.newUserRange0);
-							}
-					}
+					
 					// Category2
 
-					else if ( userType.equalsIgnoreCase(NEW_USER) && userCountNewJsonFile.get(1)>luckyDrawController.newUserRange1)
-					{
-						
+					if (userType.equalsIgnoreCase(NEW_USER) && userCountNewJsonFile.get(1) > luckyDrawController.newUserRange1) {
 						
 						  JSONObject resultJson = new JSONObject();
 						  resultJson.put("phone", json.getString("phone"));
@@ -476,43 +441,7 @@ public class LuckyDrawCalculation15 extends LuckyDrawHelper15 implements Runnabl
 						}
 
 					}
-					// Category6
-
-					else if ( userType.equalsIgnoreCase(NEW_USER) && userCountNewJsonFile.get(5)>luckyDrawController.newUserRange5)
-					{
-						
-						  JSONObject resultJson = new JSONObject();
-						  resultJson.put("phone", json.getString("phone"));
-						  resultJson.put("accountcode",
-						  json.getString("accountcode"));
-						  resultJson.put("username",
-						  json.getString("username"));
-						  resultJson.put("rewardType", "gamepoint");
-						  resultJson.put("quantity", range5.getInt("reward"));
-						  resultJson.put("billing", false);
-						  resultJson.put("LuckyDraw", luckydrawCount);
-							/*
-							 * JSONObject resultJson = new JSONObject();
-							 * resultJson.put("phone", json.getString("phone"));
-							 * resultJson.put("accountcode",
-							 * json.getString("accountcode"));
-							 * resultJson.put("username",
-							 * json.getString("username"));
-							 * resultJson.put("event", "lucky_winners");
-							 * resultJson.put("amount",
-							 * range5.getInt("reward"));
-							 */
-						
-						
-						//++newUserRange5;
-						
-						if (userCountNewJsonFile.get(5) > luckyDrawController.newUserRange5)
-						{
-						++luckyDrawController.newUserRange5;
-						setjedis.set(key, resultJson.toString());
-	//					getjedis.set(key, resultJson.toString());
-						}
-					}
+					
 					// Category7
 
 					else if ( userType.equalsIgnoreCase(NEW_USER) && userCountNewJsonFile.get(6)>luckyDrawController.newUserRange6)
@@ -1152,37 +1081,127 @@ public class LuckyDrawCalculation15 extends LuckyDrawHelper15 implements Runnabl
 					}
 					
 					
-					if (userCountGAJsonFile.get(4) == luckyDrawController.giveAwayR4 && userCountGAJsonFile.get(3) == luckyDrawController.giveAwayR3
-							&& userCountGAJsonFile.get(2) == luckyDrawController.giveAwayR2
-							&& userCountGAJsonFile.get(1) == luckyDrawController.giveAwayR1
-							&& userCountGAJsonFile.get(0) == luckyDrawController.giveAwayR0
-							&& userCountOldJsonFile.get(0) == luckyDrawController.oldUserRange0
-							&& userCountOldJsonFile.get(1) == luckyDrawController.oldUserRange1
-							&& userCountOldJsonFile.get(2) == luckyDrawController.oldUserRange2
-							&& userCountOldJsonFile.get(3) == luckyDrawController.oldUserRange3
-							&& userCountOldJsonFile.get(4) == luckyDrawController.oldUserRange4
-							&& userCountOldJsonFile.get(5) == luckyDrawController.oldUserRange5
-							&& userCountOldJsonFile.get(6) == luckyDrawController.oldUserRange6
-							&& userCountOldJsonFile.get(7) == luckyDrawController.oldUserRange7
-							&& userCountOldJsonFile.get(8) == luckyDrawController.oldUserRange8
-							&& userCountOldJsonFile.get(9) == luckyDrawController.oldUserRange9
-							&& userCountOldJsonFile.get(10) == luckyDrawController.oldUserRange10
-							&& userCountNewJsonFile.get(0) == luckyDrawController.newUserRange0
-							&& userCountNewJsonFile.get(1) == luckyDrawController.newUserRange1
-							&& userCountNewJsonFile.get(2) == luckyDrawController.newUserRange2
-							&& userCountNewJsonFile.get(3) == luckyDrawController.newUserRange3
-							&& userCountNewJsonFile.get(4) == luckyDrawController.newUserRange4
-							&& userCountNewJsonFile.get(5) == luckyDrawController.newUserRange5
-							&& userCountNewJsonFile.get(6) == luckyDrawController.newUserRange6
-							&& userCountNewJsonFile.get(7) == luckyDrawController.newUserRange7
-							&& userCountNewJsonFile.get(8) == luckyDrawController.newUserRange8
-							&& userCountNewJsonFile.get(9) == luckyDrawController.newUserRange9
-							&& userCountNewJsonFile.get(10) == luckyDrawController.newUserRange10)
-					{
-						break;
-					}
+
 					
-		}
+				} else {
+					
+					// Category1
+
+					if ( userType.equalsIgnoreCase(NEW_USER) && userCountNewJsonFile.get(0)>luckyDrawController.newUserRange0)
+					{
+						
+						
+						
+						  JSONObject resultJson = new JSONObject();
+						  resultJson.put("phone", json.getString("phone"));
+						  resultJson.put("accountcode",
+						  json.getString("accountcode"));
+						  resultJson.put("username",
+						  json.getString("username"));
+						  resultJson.put("rewardType", "gamepoint");
+						  resultJson.put("quantity", range0.getInt("reward"));
+						  resultJson.put("billing", false);
+						  resultJson.put("LuckyDraw", luckydrawCount);
+						 
+							/*
+							 * JSONObject resultJson = new JSONObject();
+							 * resultJson.put("phone", json.getString("phone"));
+							 * resultJson.put("accountcode",
+							 * json.getString("accountcode"));
+							 * resultJson.put("username",
+							 * json.getString("username"));
+							 * resultJson.put("event", "lucky_winners");
+							 * resultJson.put("amount",
+							 * range0.getInt("reward"));
+							 */
+							
+							//++newUserRange0;
+							if (userCountNewJsonFile.get(0) > luckyDrawController.newUserRange0)
+							{
+								
+								++luckyDrawController.newUserRange0;
+								
+								setjedis.set(key, resultJson.toString());
+//								getjedis.set(key, resultJson.toString());
+								
+
+								System.out.println("hello " + " This is thread number - " + id
+										+ "- " + luckyDrawController.newUserRange0);
+							}
+					}
+					// Category6
+
+					else if ( userType.equalsIgnoreCase(NEW_USER) && userCountNewJsonFile.get(5)>luckyDrawController.newUserRange5)
+					{
+						
+						  JSONObject resultJson = new JSONObject();
+						  resultJson.put("phone", json.getString("phone"));
+						  resultJson.put("accountcode",
+						  json.getString("accountcode"));
+						  resultJson.put("username",
+						  json.getString("username"));
+						  resultJson.put("rewardType", "gamepoint");
+						  resultJson.put("quantity", range5.getInt("reward"));
+						  resultJson.put("billing", false);
+						  resultJson.put("LuckyDraw", luckydrawCount);
+							/*
+							 * JSONObject resultJson = new JSONObject();
+							 * resultJson.put("phone", json.getString("phone"));
+							 * resultJson.put("accountcode",
+							 * json.getString("accountcode"));
+							 * resultJson.put("username",
+							 * json.getString("username"));
+							 * resultJson.put("event", "lucky_winners");
+							 * resultJson.put("amount",
+							 * range5.getInt("reward"));
+							 */
+						
+						
+						//++newUserRange5;
+						
+						if (userCountNewJsonFile.get(5) > luckyDrawController.newUserRange5)
+						{
+						++luckyDrawController.newUserRange5;
+						setjedis.set(key, resultJson.toString());
+//						getjedis.set(key, resultJson.toString());
+						}
+					}	
+					
+
+				}
+				
+				
+				
+				if (userCountGAJsonFile.get(4) == luckyDrawController.giveAwayR4 && userCountGAJsonFile.get(3) == luckyDrawController.giveAwayR3
+						&& userCountGAJsonFile.get(2) == luckyDrawController.giveAwayR2
+						&& userCountGAJsonFile.get(1) == luckyDrawController.giveAwayR1
+						&& userCountGAJsonFile.get(0) == luckyDrawController.giveAwayR0
+						&& userCountOldJsonFile.get(0) == luckyDrawController.oldUserRange0
+						&& userCountOldJsonFile.get(1) == luckyDrawController.oldUserRange1
+						&& userCountOldJsonFile.get(2) == luckyDrawController.oldUserRange2
+						&& userCountOldJsonFile.get(3) == luckyDrawController.oldUserRange3
+						&& userCountOldJsonFile.get(4) == luckyDrawController.oldUserRange4
+						&& userCountOldJsonFile.get(5) == luckyDrawController.oldUserRange5
+						&& userCountOldJsonFile.get(6) == luckyDrawController.oldUserRange6
+						&& userCountOldJsonFile.get(7) == luckyDrawController.oldUserRange7
+						&& userCountOldJsonFile.get(8) == luckyDrawController.oldUserRange8
+						&& userCountOldJsonFile.get(9) == luckyDrawController.oldUserRange9
+						&& userCountOldJsonFile.get(10) == luckyDrawController.oldUserRange10
+						&& userCountNewJsonFile.get(0) == luckyDrawController.newUserRange0
+						&& userCountNewJsonFile.get(1) == luckyDrawController.newUserRange1
+						&& userCountNewJsonFile.get(2) == luckyDrawController.newUserRange2
+						&& userCountNewJsonFile.get(3) == luckyDrawController.newUserRange3
+						&& userCountNewJsonFile.get(4) == luckyDrawController.newUserRange4
+						&& userCountNewJsonFile.get(5) == luckyDrawController.newUserRange5
+						&& userCountNewJsonFile.get(6) == luckyDrawController.newUserRange6
+						&& userCountNewJsonFile.get(7) == luckyDrawController.newUserRange7
+						&& userCountNewJsonFile.get(8) == luckyDrawController.newUserRange8
+						&& userCountNewJsonFile.get(9) == luckyDrawController.newUserRange9
+						&& userCountNewJsonFile.get(10) == luckyDrawController.newUserRange10)
+				{
+					break;
+				}
+				
 			
 		/* ----------------------------------------- */
 
