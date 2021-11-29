@@ -1,7 +1,9 @@
 package trivzia.jnas.luckydraw.bespeak;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
@@ -72,6 +74,7 @@ public class LuckyDrawController {
 	int i = 0;
 	int luckydrawCount = 1;
 	String d1 = null;
+	String previousWinners=null;
 	SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
 	private static LuckyDrawController luckyDrawController = null;
 	ConcurrentHashMap<String, JSONObject> criteriaFile = new ConcurrentHashMap<>();
@@ -102,6 +105,7 @@ public class LuckyDrawController {
 
 						System.out.println("Event Listen is " + snapshot.getData().get("Question_Event"));
 						if (snapshot.getData().get("Question_Event").equals("LuckyDraw")) {
+							previousWinners=copyLuckyDrawFile("LuckyWinner.txt");
 							DateUtils d = new DateUtils();
 							long start1 = System.currentTimeMillis();
 							if (d1 != null) {
@@ -109,10 +113,10 @@ public class LuckyDrawController {
 									Date date1 = sdformat.parse(d1);
 									Date date2 = sdformat.parse(d.getCurrentDateString());
 									if (date1.compareTo(date2) == 0) {
-						//				flushLuckyDrawDb();
+										flushLuckyDrawDb();
 										System.out.println("Both dates are equal");
 									} else {
-						//				flushLuckyDrawDb();
+										flushLuckyDrawDb();
 										cleanLuckyDrawFile("LuckyWinnerFull.txt");
 										cleanLuckyDrawFile("LuckyWinner.txt");
 										cleanLuckyDrawFile("LuckyWinnerDashBoard.txt");
@@ -121,7 +125,7 @@ public class LuckyDrawController {
 									System.out.println(e2);
 								}
 							} else {
-						//		flushLuckyDrawDb();
+								flushLuckyDrawDb();
 								cleanLuckyDrawFile("LuckyWinnerFull.txt");
 								cleanLuckyDrawFile("LuckyWinner.txt");
 								cleanLuckyDrawFile("LuckyWinnerDashBoard.txt");
@@ -146,7 +150,7 @@ public class LuckyDrawController {
 								final ArrayList<String> arr = new ArrayList<String>(partition);
 
 								es.execute(new LuckyDrawCalculation(test, fb, arr, luckyDrawController, i,
-										luckydrawCount));
+										luckydrawCount,previousWinners));
 
 							}
 							es.shutdown();
@@ -177,7 +181,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -201,7 +205,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -225,7 +229,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -249,7 +253,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -273,7 +277,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -297,7 +301,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -321,7 +325,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -345,7 +349,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -369,7 +373,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -393,7 +397,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -417,7 +421,7 @@ public class LuckyDrawController {
 												String k = jedis.randomKey();
 												String v = jedis.get(k);
 												JSONObject json = new JSONObject(v);
-												if (!setjedis.exists(k) && json.has("Online") && json.getBoolean("Online")
+												if ( json.has("Online") && json.getBoolean("Online")
 														&& json.has("new_balance") && json.has("datetime")) {
 													JSONObject resultJson = new JSONObject();
 													resultJson.put("phone", json.getString("phone"));
@@ -652,7 +656,7 @@ public class LuckyDrawController {
 	}
 
 	public void cleanLuckyDrawFile(String filename) {
-//		String rootPath = "C:\\Users\\LENOVO\\Downloads\\";
+	//	String rootPath = "C:\\Users\\LENOVO\\Downloads\\";
 		String rootPath = "/usr/local/src/SmartFoxServer_2X/SFS2X/data";
 		File file = new File(rootPath + "/" + filename);
 		PrintWriter writer = null;
@@ -664,4 +668,41 @@ public class LuckyDrawController {
 		writer.print("");
 		writer.close();
 	}
+	
+	
+	
+	public String copyLuckyDrawFile(String filename) {
+		String line = null;
+		try
+		{
+		//	String rootPath = "C:\\Users\\LENOVO\\Downloads\\";
+			String rootPath = "/usr/local/src/SmartFoxServer_2X/SFS2X/data";
+			File file = new File(rootPath + "/" + filename);
+			FileReader fr = new FileReader(file); // reads the file
+			BufferedReader br = new BufferedReader(fr);
+			StringBuffer sb = new StringBuffer();
+			
+			while ((line = br.readLine()) != null)
+			{
+				sb.append(line);
+				sb.append("\n");
+				
+				
+				
+			}
+			
+			fr.close();
+			line=sb.toString();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		JSONObject json = new JSONObject(line);
+		
+		return json.toString();
+	}
+	
+	
+	
 }

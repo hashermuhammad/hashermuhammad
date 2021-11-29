@@ -5,17 +5,23 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+
 import redis.clients.jedis.Jedis;
 
 public class PollDataController1 extends DataminingHelper {
 //	static String root="/usr/local/src/SmartFoxServer_2X/SFS2X/data/";
-	static String root = "C:\\Users\\LENOVO\\Downloads\\";
+	static String root = "C:\\Users\\LENOVO\\Downloads\\PollDb\\";
 
 	public static void main(String[] args) {
 		ArrayList<DataMiningBo> polluser = new ArrayList<DataMiningBo>();
@@ -25,7 +31,7 @@ public class PollDataController1 extends DataminingHelper {
 		}
 //		JSONParser parser = new JSONParser();
 		int count = 0;
-		String resourceName = root + realtimeTestValue + ".json";
+		String resourceName = root + "12.csv";
 
 		// Creating file object and specify file path
 		File file = new File(resourceName);
@@ -34,16 +40,15 @@ public class PollDataController1 extends DataminingHelper {
 		// Try block to check exception
 		try {
 
-			FileInputStream input = new FileInputStream(file);
-			// Representing input object in form of string
+			CsvSchema csv = CsvSchema.emptySchema().withHeader();
+			CsvMapper csvMapper = new CsvMapper();
+			MappingIterator<Map<?, ?>> mappingIterator = csvMapper.reader().forType(Map.class).with(csv)
+					.readValues(file);
+			List<Map<?, ?>> list = mappingIterator.readAll();
 
-			String contents = IOUtils.toString(input, Charset.forName("UTF-8"));
-
-			// Print contents of that file
-			// System.out.println(contents);
 			JSONArray a = null;
 			try {
-				a = new JSONArray(contents);
+				a = new JSONArray(list);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -56,7 +61,7 @@ public class PollDataController1 extends DataminingHelper {
 				JSONObject root = a.getJSONObject(i);
 				
 
-				if (root.has("ip_address") && !root.getString("ip_address").equals("") && root.getString("ip_address") != null && root.has("Poll33") && root.get("Poll33")!="") {
+				if (root.has("ip_address") && !root.getString("ip_address").equals("") && root.getString("ip_address") != null) {
 //				json = readJsonFromUrl("http://ip-api.com/json/" + root.getString("ip_address"));
 				
 				if(ipcount<=100)

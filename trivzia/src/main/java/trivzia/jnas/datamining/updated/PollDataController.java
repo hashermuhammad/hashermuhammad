@@ -1,9 +1,7 @@
-package trivzia.jnas.datamining;
+package trivzia.jnas.datamining.updated;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +14,6 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +23,9 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 import redis.clients.jedis.Jedis;
+import trivzia.jnas.datamining.DataMiningBo;
+import trivzia.jnas.datamining.DataminingHelper;
+import trivzia.jnas.datamining.PollBo;
 
 public class PollDataController extends DataminingHelper {
 //	static String root="/usr/local/src/SmartFoxServer_2X/SFS2X/data/";

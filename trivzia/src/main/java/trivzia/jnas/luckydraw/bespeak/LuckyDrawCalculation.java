@@ -27,7 +27,8 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 	LuckyDrawController luckyDrawController=null;
 	int id=0;
 	int luckydrawCount;
-	LuckyDrawCalculation(boolean test, FireStoreConnection fb, ArrayList<String> keys,LuckyDrawController luckyDrawController,int id,int luckydrawCount)
+	String previousWinners=null;
+	LuckyDrawCalculation(boolean test, FireStoreConnection fb, ArrayList<String> keys,LuckyDrawController luckyDrawController,int id,int luckydrawCount,String previousWinners)
 	{
 		if (test)
 		{
@@ -44,6 +45,7 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 		this.luckyDrawController=luckyDrawController;
 		this.id=id;
 		this.luckydrawCount=luckydrawCount;
+		this.previousWinners=previousWinners;
 	}
 	@Override
 	public void run()
@@ -274,7 +276,7 @@ public class LuckyDrawCalculation extends LuckyDrawHelper implements Runnable
 				String date = json.getString("datetime");
 				String userType = getUserType(date);
 				
-				if(!setjedis.exists(key))
+				if(!previousWinners.contains(key))
 				{
 				
 					
