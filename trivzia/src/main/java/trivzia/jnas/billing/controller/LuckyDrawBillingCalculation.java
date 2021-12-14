@@ -96,6 +96,8 @@ public class LuckyDrawBillingCalculation extends LuckyDrawBillingHelper implemen
 					{
 						++totalCount;
 						String rewardType = json.getString("rewardType");
+						int couponId = json.getInt("couponId");
+						String radeem="No";
 						objArr.add(json);
 
 						String accountcode = json.getString("accountcode");
@@ -190,6 +192,15 @@ public class LuckyDrawBillingCalculation extends LuckyDrawBillingHelper implemen
 										date.getCurrentDateTimeString(), connection);
 							}
 
+						}
+						else if (rewardType.equals(SysConstants.REWARD_COUPON))
+						{
+
+							int insertkey = dao.insertCoupon(accountcode, couponId,radeem, notes, date.getCurrentDateTimeString(),connection);
+							if (insertkey > 0)
+							{
+								System.out.println("Coupon Added"+insertkey);
+							}
 						}
 					}
 					else

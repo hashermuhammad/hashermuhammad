@@ -496,4 +496,48 @@ public class LuckyDrawBillingDao extends DbConnectionDao
 		}
 		return update;
 	}
+	
+	
+	public int  insertCoupon(String accountCode,int couponId,String radeem,String notes,String date,Connection connection) throws SQLException
+	{
+		
+		String insertPlusTime = " INSERT INTO trivzia_user_coupons (accountcode,coupon_id,radeem,datetime,notes) VALUES "
+				+ " (?,?,?,?,?) ";
+	//	Connection connection = null;
+		PreparedStatement prepStmt = null;
+		int update=-1;
+		try
+		{
+	//		connection = getSqlConnection();
+			
+			
+			prepStmt = connection.prepareStatement(insertPlusTime,Statement.RETURN_GENERATED_KEYS);
+
+			prepStmt.setString(1, accountCode);
+			prepStmt.setInt(2, couponId);
+			prepStmt.setString(3, radeem);
+			prepStmt.setString(4, date);
+			prepStmt.setString(5, notes);
+			
+			
+		prepStmt.executeUpdate();
+			 ResultSet result  = prepStmt.getGeneratedKeys();
+			 int key = result.next() ? result.getInt(1) : 0;
+			 if(key!=0){
+			//	    System.out.println("Generated key for insertPlusFive ="+key);
+				    update=key;
+				}
+			
+			
+		}
+		finally
+		{
+			
+				prepStmt.close();
+		//		connection.close();
+				
+			
+		}
+		return update;
+	}
 }

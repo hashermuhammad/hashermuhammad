@@ -9,5 +9,6 @@ public class SysConstants
 	public static String REWARD_BUNDLE = "bundle";
 	public static String REWARD_GIVEAWAY = "Giveaway";
 	public static String REWARD_GAMEPOINT = "gamepoint";
+	public static String REWARD_COUPON = "coupon";
 	
 }
