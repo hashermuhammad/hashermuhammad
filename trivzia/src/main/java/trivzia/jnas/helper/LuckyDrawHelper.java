@@ -9,6 +9,9 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -239,5 +242,22 @@ public class LuckyDrawHelper extends DbConnectionDao
 	        sortedJsonArray.put(jsonValues.get(i));
 	    }
 		return sortedJsonArray; 
+	}
+	
+	public int checkLuckyWinnerDate(String date, JSONObject json) {
+		int numOfDays = 0;
+		if (date != null && !date.equals("")) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			LocalDate winnerdate = LocalDate.parse(date, dtf);
+
+			LocalDate currentDate = LocalDate.now();
+			long diffInDays = ChronoUnit.DAYS.between(winnerdate, currentDate);
+			numOfDays = (int) diffInDays;
+		} else {
+			System.out.println(" error in  dates for luckydraw " + json.getString("phone"));
+		}
+
+		return numOfDays;
+
 	}
 }
